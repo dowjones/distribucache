@@ -1,23 +1,20 @@
-var Cache = require('../lib/cache/Base');
+var Cache = require('../lib/cache/Cache');
 var ExpireDecorator = require('../lib/cache/ExpireDecorator');
 var PopulateDecorator = require('../lib/cache/PopulateDecorator');
 
 
-var cache = new Cache({
-  //populate: function (key, cb) {
-    //console.log('[client] populating key:', key);
-    //setTimeout(function () {
-      //cb(null, Math.random());
-      ////cb(null, 'v1');
-    //}, 1000);
-  //}
+var cache = new Cache();
+
+cache = new ExpireDecorator(cache, {
+  expiresIn: 5000,
+  staleIn: 2000
 });
 
 cache = new PopulateDecorator(cache, {
   populate: function (key, cb) {
     setTimeout(function () {
       cb(null, Math.random());
-    }, 1000);
+    }, 250);
   }
 });
 
