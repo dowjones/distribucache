@@ -1,3 +1,4 @@
 /node_modules
 /coverage
 *.rdb
+npm-debug.log
