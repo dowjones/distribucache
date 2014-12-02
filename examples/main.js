@@ -1,5 +1,6 @@
 var Cache = require('../lib/cache/Base');
 var ExpireDecorator = require('../lib/cache/ExpireDecorator');
+var PopulateDecorator = require('../lib/cache/PopulateDecorator');
 
 
 var cache = new Cache({
@@ -12,25 +13,20 @@ var cache = new Cache({
   //}
 });
 
-cache = new ExpireDecorator(cache, {
-  expiresIn: 5000
+cache = new PopulateDecorator(cache, {
+  populate: function (key, cb) {
+    setTimeout(function () {
+      cb(null, Math.random());
+    }, 1000);
+  }
 });
 
 function doIt() {
   var t = Date.now();
   cache.get('k2', function (err, value) {
     if (err) throw err;
-
-
-    if (null === value) {
-      cache.set('k2', 'kv2', function (err) {
-        console.log('[client] set "%s" in %dms',
-          'kv2', Date.now() - t);
-      });
-    } else {
-      console.log('[client] got "%s" in %dms',
-        value, Date.now() - t);
-    }
+    console.log('[client] got "%s" in %dms',
+      value, Date.now() - t);
   });
 }
 
