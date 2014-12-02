@@ -1,6 +1,5 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  spy = require('sinon').spy,
-  units = require('./_all');
+  spy = require('sinon').spy;
 
 describe('Distribucache', function () {
   var noop, unit, deco, c;
