@@ -87,7 +87,7 @@ describe('Cache', function () {
 
       unit = new Cache({password: 'abc'});
       client = unit._createRedisClient();
-      
+
       client.should.eql(redisClient);
       client.auth.called.should.be.ok;
     });
