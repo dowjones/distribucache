@@ -1,0 +1,12 @@
+{
+  "name": "distribucache",
+  "version": "1.0.0",
+  "main": "./lib",
+  "dependencies": {
+    "async": "^0.9.0",
+    "joi": "^5.0.1",
+    "lodash": "^2.4.1",
+    "redis": "^0.12.1",
+    "redis-lockr": "0.0.1"
+  }
+}
