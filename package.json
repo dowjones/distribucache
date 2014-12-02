@@ -2,6 +2,11 @@
   "name": "distribucache",
   "version": "1.0.0",
   "main": "./lib",
+  "scripts": {
+    "test": "npm run test-cover; istanbul check-coverage --statements 70 --functions 70 --branches 70 --lines 70",
+    "test-cover": "istanbul cover _mocha -- -r should --recursive",
+    "test-watch": "mocha -r should --recursive -w -R min"
+  },
   "dependencies": {
     "async": "^0.9.0",
     "common-errors": "^0.4.17",
@@ -9,5 +14,13 @@
     "lodash": "^2.4.1",
     "redis": "^0.12.1",
     "redis-lockr": "0.0.1"
+  },
+  "devDependencies": {
+    "istanbul": "^0.3.2",
+    "mocha": "^2.0.1",
+    "proxyquire": "^1.1.0",
+    "should": "^4.3.0",
+    "sinon": "^1.12.1",
+    "sinon-lazy-stub": "^0.1.1"
   }
 }
