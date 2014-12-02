@@ -1,16 +1,9 @@
-var Cache = require('../lib/cache/Cache');
-var ExpireDecorator = require('../lib/cache/ExpireDecorator');
-var PopulateDecorator = require('../lib/cache/PopulateDecorator');
+var dc = require('../lib'),
+  cache;
 
-
-var cache = new Cache();
-
-cache = new ExpireDecorator(cache, {
+cache = dc.create({
   expiresIn: 5000,
-  staleIn: 2000
-});
-
-cache = new PopulateDecorator(cache, {
+  staleIn: 2000,
   populate: function (key, cb) {
     setTimeout(function () {
       cb(null, Math.random());
