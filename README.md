@@ -149,7 +149,7 @@ of keyspace events and expiring keys).
 
 ### Stored Value Size Optimization
 
-The default assumption for this cache is that the value stored will be large.
+The default assumption for this cache is that the values stored will be large.
 Thus, unnecessarily storing a value identical to the one that is already in
 the cache should be avoided, even at some cost.
 
@@ -186,7 +186,8 @@ Possible `config` values:
 {String} [config.password]
 ```
 
-The following values are also available to the `CacheClient#create`:
+The following values are allowed for the config and are
+also available to the `CacheClient#create`:
 ```
 {String} [config.namespace]
 {String} [config.optimizeForSmallValues] defaults to false
@@ -202,11 +203,12 @@ The following values are also available to the `CacheClient#create`:
 #### CacheClient
 
   - `create(namespace, config)`
-    - `namespace` is a String that will identify the particular cache.
+    - `namespace` is a `String` that will identify the particular cache.
       It is good practice to add a version to the namespace in order to
       make sure that when you change the interface, you will not get
       older cached objects (with a possibly different signature).
-    - `config` is an Object. See the global config above for all
+      For example: `create('articles:v1')`.
+    - `config` is an `Object`. See the global config above for all
       of the possible values.
 
 
@@ -227,7 +229,7 @@ the error.
 ### Human-readable Time Intervals
 
 The time intervals in this library can be provided as a `number`
-in milliseconds *or* as a human-readible interval.
+in milliseconds **or** as a human-readible time interval.
 
 Below are a few  examples:
 
