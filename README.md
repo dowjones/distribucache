@@ -18,16 +18,14 @@ based on the configuration that you use. Below is an example of the simplest cac
 
 ```javascript
 var dc = require('distribucache'),
-
   // create a cache-client (keeps track of the Redis connections)
   // generally performed once in the lifetime of the app
   cacheClient = dc.createClient({
     host: 'localhost',
     port: 6379
   }),
-
   // create a new cache
-  // performed once per cache configuration
+  // performed every time a new cache configuration is needed
   cache = cacheClient.create('nsp');
 
 cache.get('k1', function (err, value) {
@@ -149,11 +147,11 @@ of determining which keys need to be re-populated is on Redis (using a combinati
 of keyspace events and expiring keys).
 
 
-### Small-value Optimization
+### Stored Value Size Optimization
 
 The default assumption for this cache is that the value stored will be large.
 Thus, unnecessarily storing a value identical to the one that is already in
-the cache should be avoided, even at a minor processing cost.
+the cache should be avoided, even at some cost.
 
 When a value is set into the cache, an md5 hash of the value is stored along
 with it. On subsequent `set` calls, first the hash is retrieved from the cache,
@@ -163,9 +161,10 @@ datastore and a few extra CPU cycles for the md5 checksum the cache makes
 sure that the large value does not get (un)marshalled and transmitted to
 the datastore.
 
-If the values that you intend to store are small, it may not make sense to
-have the extra call. Thus, you may want to disable this feature in that case.
-To do so, set the `optimizeForSmallValues` config parameter to `true`:
+If the values that you intend to store are small (say, < 0.1 KB; the hash itself is 16 bytes),
+it may not make sense to have the extra call. Thus, you may want to disable
+this feature in that case. To do so, set the `optimizeForSmallValues`
+config parameter to `true`:
 
 ```javascript
 var cache = cacheClient.create('nsp', {
