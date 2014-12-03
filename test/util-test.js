@@ -59,4 +59,22 @@ describe('util', function () {
       util.intervalToMs('1.5 seconds').should.equal(1500);
     });
   });
+
+  describe('getNamespace', function () {
+    it('should return an empty string if no input', function () {
+      util.createNamespace().should.equal('');
+    });
+
+    it('should return the only arg if one arg', function () {
+      util.createNamespace('a').should.equal('a');
+    });
+
+    it('should return a namespace provided multiple args', function () {
+      util.createNamespace('a', 'b', 'c').should.equal('a:b:c');
+    });
+
+    it('should skip falsey args', function () {
+      util.createNamespace('a', undefined, false, null, '', 'b').should.equal('a:b');
+    });
+  });
 });
