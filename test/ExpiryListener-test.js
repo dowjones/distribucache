@@ -38,7 +38,7 @@ describe('ExpiryListener', function () {
       client.config.withArgs('set', 'notify-keyspace-events', 'Kx').yields(null, 'ok');
 
       client.on = function (message, cb) {
-        cb('', 'a:b', 'expired');
+        cb('__keyspace@0__:k', 'a:b', 'expired');
       };
 
       unit.listen();
