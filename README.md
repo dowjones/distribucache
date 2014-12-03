@@ -1,7 +1,7 @@
 # Distribucache
 
 Redis-backed automatically-repopulating cache. This cache does everything in
-it's power to shield the caller from the delays of the downstream services. It has a unque
+it's power to shield the caller from the delays of the downstream services. It has a unique
 feature, where the cache will populate itself on a certain interval, and will
 gracefully stop doing so when the values that were being refreshed have not been used.
 
