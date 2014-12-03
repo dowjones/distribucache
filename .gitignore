@@ -1,4 +1,11 @@
+/.*
+!.gitignore
+!.npmignore
+/*.log
 /node_modules
+/npm-shrinkwrap.json
+/target
+/views/*.js
 /coverage
 *.rdb
 npm-debug.log
