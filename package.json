@@ -19,7 +19,8 @@
     "joi": "^5.0.1",
     "lodash": "^2.4.1",
     "redis": "^0.12.1",
-    "redis-lockr": "0.0.1"
+    "redis-lockr": "0.0.1",
+    "require-directory": "^2.0.0"
   },
   "devDependencies": {
     "istanbul": "^0.3.2",
