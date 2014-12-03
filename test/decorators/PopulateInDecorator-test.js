@@ -40,14 +40,14 @@ describe('PopulateInDecorator', function () {
       '../ExpiryListener': ExpiryListener
     });
 
-    unit = new PopulateInDecorator(cache, {
+    unit = new PopulateInDecorator(cache, redisClient, {
       populateIn: 1000,
       pausePopulateIn: 2000
     });
   });
 
   it('should create with a namespace', function () {
-    new PopulateInDecorator(cache, {
+    new PopulateInDecorator(cache, redisClient,{
       populateIn: 1000,
       pausePopulateIn: 2000,
       namespace: 'n'

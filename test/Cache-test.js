@@ -1,28 +1,24 @@
-var proxyquire = require('proxyquire').noCallThru(),
+var Cache = require('./_all').Cache,
   stub = require('sinon').stub,
   spy = require('sinon').spy;
 
 describe('Cache', function () {
-  var Cache, unit, redis, redisClient;
+  var unit, redisClient;
 
   beforeEach(function () {
     function noop() {}
-
-    redisClient = stub({hget: noop, hset: noop, del: noop, auth: noop});
-    redis = stub({createClient: noop});
-    redis.createClient.returns(redisClient);
-
-    Cache = proxyquire('../lib/Cache', {
-      redis: redis
+    redisClient = stub({
+      hget: noop,
+      hset: noop,
+      del: noop
     });
-
-    unit = new Cache();
+    unit = new Cache(redisClient);
   });
 
   it('should create a cache without config', function () {
-    new Cache({namespace: 'n'});
+    new Cache(redisClient, {namespace: 'n'});
     (function () {
-      new Cache({unknownConfig: 'a'});
+      new Cache(redisClient, {unknownConfig: 'a'});
     }).should.throw(/unknownConfig/);
   });
 
@@ -74,22 +70,6 @@ describe('Cache', function () {
   describe('_getClient', function () {
     it('should get the redis client', function () {
       unit._getClient().should.equal(redisClient);
-    });
-  });
-
-  describe('_createRedisClient', function () {
-    it('should create a new redis client using the existing config', function () {
-      unit._createRedisClient().should.eql(redisClient);
-    });
-
-    it('should use auth if a password is configured', function () {
-      var client;
-
-      unit = new Cache({password: 'abc'});
-      client = unit._createRedisClient();
-
-      client.should.eql(redisClient);
-      client.auth.called.should.be.ok;
     });
   });
 });

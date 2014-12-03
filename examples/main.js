@@ -1,7 +1,11 @@
-var dc = require('../lib'),
+var distribucache = require('../lib'),
+  cacheClient = distribucache.createClient({
+    host: 'localhost',
+    port: 6379
+  }),
   cache;
 
-cache = dc.create({
+cache = cacheClient.create('randomness', {
   staleIn: '10 sec',
   //populateIn: '5 sec',
   //pausePopulateIn: '1 min',

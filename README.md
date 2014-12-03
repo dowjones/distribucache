@@ -18,10 +18,17 @@ based on the configuration that you use. Below is an example of the simplest cac
 
 ```javascript
 var dc = require('distribucache'),
-  cache = dc.create({
+
+  // create a cache-client (keeps track of the Redis connections)
+  // generally performed once in the lifetime of the app
+  cacheClient = dc.createClient({
     host: 'localhost',
     port: 6379
-  });
+  }),
+
+  // create a new cache
+  // performed once per cache configuration
+  cache = cacheClient.create('nsp');
 
 cache.get('k1', function (err, value) {
   if (err) throw err;
@@ -43,6 +50,29 @@ cache.del('k1', function (err) {
 the value is not in the cache.
 
 
+### Configuration
+
+The cache can be configured in two places: (a) when creating a cache-client,
+and (b) when creating a cache. As you expect, the configuration in the
+cache overrides the configuration of the cache-client:
+
+```javascript
+var cacheClient = dc.createClient({
+  host: 'localhost',
+  port: 6379,
+  expiresIn: '2 sec'   // setting globally
+});
+
+// overrides the globally set `expiresIn`
+var articleCache = cacheClient.create('articles', {
+  expiresIn: '1 min'
+});
+
+// uses the global `expiresIn`
+var pageCache = cacheClient.create('pages');
+```
+
+
 ### Populating
 
 A common pattern is to call the `get` first, and if the item is not
@@ -54,7 +84,7 @@ that the `get` always returns a value, either from the cache or from
 the downstream service.
 
 ```javascript
-var cache = dc.create({
+var cache = cacheClient.create('nsp', {
   populate: function (key, cb) {
     setTimeout(function () {
       cb(null, 42);
@@ -77,7 +107,7 @@ its expiration date. When the `populate` function is set,
 instead of returning `null` the `populate` method will be called.
 
 ```javascript
-var cache = dc.create({
+var cache = cacheClient.create('nsp', {
   expiresIn: 2000  // 2 seconds
 });
 ```
@@ -89,7 +119,7 @@ is called in the background if it is provided; allowing the next `get` call to
 get a fresh value, without incurring the delay of accessing a downstream service.
 
 ```javascript
-var cache = dc.create({
+var cache = cacheClient.create('nsp', {
   staleIn: 1000  // 1 second
 });
 ```
@@ -108,7 +138,7 @@ access time of keys. For example, if you want the cache to stop populating when 
 key hasn't been used for a minute, set `pausePopulateIn` to `1000 * 60` ms.
 
 ```javascript
-var cache = dc.create({
+var cache = cacheClient.create('nsp', {
   populateIn: 1000  // 1 second
   pausePopulateIn: 1000 * 60  // 1 minute
 });
@@ -119,29 +149,66 @@ of determining which keys need to be re-populated is on Redis (using a combinati
 of keyspace events and expiring keys).
 
 
-### Possible Configuration
+### Small-value Optimization
 
+The default assumption for this cache is that the value stored will be large.
+Thus, unnecessarily storing a value identical to the one that is already in
+the cache should be avoided, even at a minor processing cost.
+
+When a value is set into the cache, an md5 hash of the value is stored along
+with it. On subsequent `set` calls, first the hash is retrieved from the cache,
+and if it is identical to the hash of the new value, the new value is not
+sent to the cache. Thus, for the price of an additional call to the
+datastore and a few extra CPU cycles for the md5 checksum the cache makes
+sure that the large value does not get (un)marshalled and transmitted to
+the datastore.
+
+If the values that you intend to store are small, it may not make sense to
+have the extra call. Thus, you may want to disable this feature in that case.
+To do so, set the `optimizeForSmallValues` config parameter to `true`:
+
+```javascript
+var cache = cacheClient.create('nsp', {
+  optimizeForSmallValues: true
+});
 ```
-{Object} [config]
 
+
+### API
+
+#### Distribucache
+
+  - `createClient(config)`
+
+Possible `config` values:
+```
 {String} [config.host] defaults to 'localhost'
 {Number} [config.port] defaults to 6379
 {String} [config.password]
+```
+
+The following values are also available to the `CacheClient#create`:
+```
 {String} [config.namespace]
-
 {String} [config.optimizeForSmallValues] defaults to false
-
 {String} [config.expiresIn] in ms
 {String} [config.staleIn] in ms
-
 {Function} [config.populate]
-
 {Number} [config.populateIn] in ms, defaults to 30sec
 {Number} [config.pausePopulateIn] in ms
 {Number} [config.leaseExpiresIn] in ms
 {Number} [config.accessedAtThrottle] in ms
-{Number} [config.namespace]
 ```
+
+#### CacheClient
+
+  - `create(namespace, config)`
+    - `namespace` is a String that will identify the particular cache.
+      It is good practice to add a version to the namespace in order to
+      make sure that when you change the interface, you will not get
+      older cached objects (with a possibly different signature).
+    - `config` is an Object. See the global config above for all
+      of the possible values.
 
 
 ### Emitted Events
