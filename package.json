@@ -1,6 +1,12 @@
 {
   "name": "distribucache",
   "version": "1.0.0",
+  "description": "Redis-backed Automatically Populating Cache",
+  "repository": {
+    "type": "git",
+    "url": "git://github.dowjones.com/frontpage/distribucache.git"
+  },
+  "author": "nemtsov@gmail.com",
   "main": "./lib",
   "scripts": {
     "test": "npm run test-cover; istanbul check-coverage --statements 70 --functions 70 --branches 70 --lines 70",
