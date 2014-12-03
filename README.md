@@ -18,7 +18,10 @@ based on the configuration that you use. Below is an example of the simplest cac
 
 ```javascript
 var dc = require('distribucache'),
-  cache = dc.create();
+  cache = dc.create({
+    host: 'localhost',
+    port: 6379
+  });
 
 cache.get('k1', function (err, value) {
   if (err) throw err;
