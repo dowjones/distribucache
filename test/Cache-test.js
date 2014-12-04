@@ -36,26 +36,6 @@ describe('Cache', function () {
       unit.get('k', check);
     });
 
-    it('should get unmarshalled data', function (done) {
-      function check(err, value) {
-        value.should.eql({a: 42, b: true});
-        done();
-      }
-      redisClient.hget.yields(null, '{"a":42,"b":true}');
-      unit.get('k', check);
-    });
-
-    it('should return marshalling errors in cb', function (done) {
-      function check(err) {
-        err.name.should.equal('MarshallingError');
-        err.message.should.match(/Failed to marshall/);
-        err.message.should.match(/{"a":/); // part of value
-        done();
-      }
-      redisClient.hget.yields(null, '{"a":42,');
-      unit.get('k', check);
-    });
-
     it('should proxy error from hget', function (done) {
       function check(err) {
         err.message.should.equal('handled');
@@ -78,16 +58,6 @@ describe('Cache', function () {
 
       redisClient.hset.yields(null, 'ok');
       unit.set('k', 'v', check);
-    });
-
-    it('should marshall an object to a string before setting', function (done) {
-      function check(err) {
-        redisClient.hset.lastCall.args[2]
-          .should.equal('{"a":42,"b":true}');
-        done();
-      }
-      redisClient.hset.yields(null, 'ok');
-      unit.set('k', {a: 42, b: true}, check);
     });
   });
 

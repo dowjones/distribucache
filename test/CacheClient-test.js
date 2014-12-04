@@ -22,6 +22,8 @@ describe('CacheClient', function () {
       }
     });
 
+    deco.OnlySetChangedDecorator = spy();
+    deco.MarshallDecorator = spy();
     unit = new CacheClient();
   });
 
@@ -32,7 +34,6 @@ describe('CacheClient', function () {
 
   describe('create', function () {
     it('should create default cache', function () {
-      deco.OnlySetChangedDecorator = spy();
       c = unit.create('n');
       c.should.be.type('object');
       deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
@@ -44,7 +45,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the expire deco on expiresIn', function () {
-      deco.OnlySetChangedDecorator = spy();
       deco.ExpireDecorator = spy();
 
       c = unit.create('n', {expiresIn: 200});
@@ -55,7 +55,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the expire deco on staleIn', function () {
-      deco.OnlySetChangedDecorator = spy();
       deco.ExpireDecorator = spy();
 
       c = unit.create('n', {staleIn: 200});
@@ -66,7 +65,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the populate deco on populate', function () {
-      deco.OnlySetChangedDecorator = spy();
       deco.PopulateDecorator = spy();
 
       c = unit.create('n', {populate: function () {}});
@@ -77,7 +75,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the populateIn deco on populateIn & populate', function () {
-      deco.OnlySetChangedDecorator = spy();
       deco.PopulateDecorator = spy();
       deco.PopulateInDecorator = spy();
 
@@ -90,7 +87,6 @@ describe('CacheClient', function () {
     });
 
     it('should not use populateIn without populate', function () {
-      deco.OnlySetChangedDecorator = spy();
       deco.PopulateInDecorator = spy();
 
       c = unit.create('n', {populateIn: 200});
