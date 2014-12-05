@@ -50,23 +50,23 @@ describe('CacheClient', function () {
     });
 
     it('should use the expire deco on expiresIn', function () {
-      deco.ExpireDecorator = spy();
+      deco.ExpiresDecorator = spy();
 
       c = unit.create('n', {expiresIn: 200});
       c.should.be.type('object');
 
       deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.ExpireDecorator.calledOnce.should.be.ok;
+      deco.ExpiresDecorator.calledOnce.should.be.ok;
     });
 
     it('should use the expire deco on staleIn', function () {
-      deco.ExpireDecorator = spy();
+      deco.ExpiresDecorator = spy();
 
       c = unit.create('n', {staleIn: 200});
       c.should.be.type('object');
 
       deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.ExpireDecorator.calledOnce.should.be.ok;
+      deco.ExpiresDecorator.calledOnce.should.be.ok;
     });
 
     it('should use the populate deco on populate', function () {
