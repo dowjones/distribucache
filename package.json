@@ -9,7 +9,7 @@
   "author": "nemtsov@gmail.com",
   "main": "./lib",
   "scripts": {
-    "test": "npm run test-cover; istanbul check-coverage --statements 70 --functions 70 --branches 70 --lines 70",
+    "test": "sh -c 'npm run test-cover && istanbul check-coverage --statements 70 --functions 70 --branches 70 --lines 70'",
     "test-cover": "istanbul cover _mocha -- -r should --recursive",
     "test-watch": "mocha -r should --recursive -w -R min"
   },
