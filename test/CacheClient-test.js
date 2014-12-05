@@ -12,12 +12,13 @@ describe('CacheClient', function () {
     deco = {};
     util = {
       createRedisClient: stub(),
+      createNamespace: stub(),
       ensureKeyspaceNotifications: stub()
     };
 
     CacheClient = proxyquire('../lib/CacheClient', {
       './Cache': function () {},
-      'util': util,
+      './util': util,
       'require-directory': function () {
         return deco;
       }
@@ -25,7 +26,6 @@ describe('CacheClient', function () {
 
     deco.OnlySetChangedDecorator = spy();
     deco.MarshallDecorator = spy();
-    unit = new CacheClient();
   });
 
   it('should create a preconfigured client', function () {
@@ -34,6 +34,10 @@ describe('CacheClient', function () {
   });
 
   describe('create', function () {
+    beforeEach(function () {
+      unit = new CacheClient();
+    });
+
     it('should create default cache', function () {
       c = unit.create('n');
       c.should.be.type('object');
