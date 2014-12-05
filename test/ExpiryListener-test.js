@@ -19,51 +19,31 @@ describe('ExpiryListener', function () {
   });
 
   describe('listen', function () {
-    it('should emit an error on err', function (done) {
-      unit.on('error', function (err) {
-        err.message.should.equal('bad');
+    it('should subscribe to message', function () {
+      unit.listen();
+      client.psubscribe.calledOnce.should.be.ok;
+      client.on.calledOnce.should.be.ok;
+    });
+
+    it('should call _onExpiry on expiry event', function (done) {
+      unit.listen();
+      unit.on('expired', function (key) {
+        key.should.equal('a');
         done();
       });
-      client.config.yields(new Error('bad'));
-      unit.listen();
+      client.on.lastCall.args[1]('__keyspace@0__:k', 'a:b', 'expired');
     });
 
-    it('should set keyspace and expired notifications and emit expired', function (done) {
-      var listen = false, expired = false;
-      function check() { if (listen && expired) done(); }
-      unit.on('listen', function () { listen = true; check(); });
-      unit.on('expired', function () { expired = true; check(); });
-
-      client.config.withArgs('get', 'notify-keyspace-events').yields(null, ['', '']);
-      client.config.withArgs('set', 'notify-keyspace-events', 'Kx').yields(null, 'ok');
-
-      client.on = function (message, cb) {
-        cb('__keyspace@0__:k', 'a:b', 'expired');
-      };
-
+    it('should not emit an expired event if message not "expired"', function () {
       unit.listen();
+      unit.on('expired', function (key) { throw new Error('called expired'); });
+      client.on.lastCall.args[1]('__keyspace@0__:k', 'a:b', 'del');
     });
 
-    it('should set keyspace and expired notifications', function (done) {
-      client.config.yields(null, ['', '']);
-      client.on = function (message, cb) { cb('', 'a:b', 'del'); };
-      unit.on('listen', done);
-      unit.on('expired', function () { throw new Error('very bad'); });
+    it('should not emit an expired event if wrong channel', function () {
       unit.listen();
-    });
-
-    it('should only set expired notifications if keyspace are set', function (done) {
-      unit.on('listen', done);
-      client.config.withArgs('get', 'notify-keyspace-events').yields(null, ['', 'K']);
-      client.config.withArgs('set', 'notify-keyspace-events', 'Kx').yields(null, 'ok');
-      unit.listen();
-    });
-
-    it('should only set keyspace notifications if expired are set', function (done) {
-      unit.on('listen', done);
-      client.config.withArgs('get', 'notify-keyspace-events').yields(null, ['', 'x']);
-      client.config.withArgs('set', 'notify-keyspace-events', 'xK').yields(null, 'ok');
-      unit.listen();
+      unit.on('expired', function (key) { throw new Error('called expired'); });
+      client.on.lastCall.args[1]('__keyspace@0__:z', '', '');
     });
   });
 

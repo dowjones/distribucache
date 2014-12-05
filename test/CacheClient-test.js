@@ -3,20 +3,21 @@ var proxyquire = require('proxyquire').noCallThru(),
   spy = require('sinon').spy;
 
 describe('CacheClient', function () {
-  var noop, CacheClient, redisClient, unit, deco, c;
+  var noop, CacheClient, util, unit, deco, c;
 
   beforeEach(function () {
     var redis;
     function noop() {}
 
     deco = {};
-    redis = stub({createClient: noop}),
-    redisClient = stub({auth: noop});
-    redis.createClient.returns(redisClient);
+    util = {
+      createRedisClient: stub(),
+      ensureKeyspaceNotifications: stub()
+    };
 
     CacheClient = proxyquire('../lib/CacheClient', {
       './Cache': function () {},
-      'redis': redis,
+      'util': util,
       'require-directory': function () {
         return deco;
       }
@@ -27,9 +28,9 @@ describe('CacheClient', function () {
     unit = new CacheClient();
   });
 
-  it('should create a client with auth', function () {
-    unit = new CacheClient({password: 'abc'});
-    redisClient.auth.calledTwice.should.be.ok;
+  it('should create a preconfigured client', function () {
+    unit = new CacheClient({isPreconfigured: true});
+    util.ensureKeyspaceNotifications.called.should.not.be.ok;
   });
 
   describe('create', function () {
