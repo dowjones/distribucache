@@ -1,4 +1,4 @@
-# Distribucache
+# Distribucache [![Build Status](https://secure.travis-ci.org/areusjs/distribucache.png)](http://travis-ci.org/areusjs/distribucache) [![NPM version](https://badge.fury.io/js/distribucache.svg)](http://badge.fury.io/js/distribucache)
 
 Redis-backed automatically-repopulating cache. This cache does everything in
 it's power to shield the caller from the delays of the downstream services. It has a unique

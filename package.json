@@ -4,7 +4,7 @@
   "description": "Redis-backed Automatically Populating Cache",
   "repository": {
     "type": "git",
-    "url": "git://github.dowjones.com/frontpage/distribucache.git"
+    "url": "git://github.com/areusjs/distribucache.git"
   },
   "author": "nemtsov@gmail.com",
   "main": "./lib",
