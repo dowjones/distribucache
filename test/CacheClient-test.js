@@ -1,5 +1,4 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  stub = require('sinon').stub,
   spy = require('sinon').spy;
 
 describe('CacheClient', function () {
@@ -9,23 +8,29 @@ describe('CacheClient', function () {
     var redis;
     function noop() {}
 
-    deco = {};
+    function Cache() {}
+    Cache.prototype = {};
+
     util = {
-      createRedisClient: stub(),
-      createNamespace: stub(),
-      ensureKeyspaceNotifications: stub()
+      createRedisClient: spy(),
+      createNamespace: spy(),
+      ensureKeyspaceNotifications: spy()
     };
 
+    deco = {};
+    deco.OnlySetChangedDecorator = spy(Cache);
+    deco.MarshallDecorator = spy(Cache);
+    deco.ExpiresDecorator = spy(Cache);
+    deco.PopulateDecorator = spy(Cache);
+    deco.PopulateInDecorator = spy(Cache);
+
     CacheClient = proxyquire('../lib/CacheClient', {
-      './Cache': function () {},
+      './Cache': Cache,
       './util': util,
       'require-directory': function () {
         return deco;
       }
     });
-
-    deco.OnlySetChangedDecorator = spy();
-    deco.MarshallDecorator = spy();
   });
 
   it('should create a preconfigured client', function () {
@@ -50,8 +55,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the expire deco on expiresIn', function () {
-      deco.ExpiresDecorator = spy();
-
       c = unit.create('n', {expiresIn: 200});
       c.should.be.type('object');
 
@@ -60,8 +63,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the expire deco on staleIn', function () {
-      deco.ExpiresDecorator = spy();
-
       c = unit.create('n', {staleIn: 200});
       c.should.be.type('object');
 
@@ -70,8 +71,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the populate deco on populate', function () {
-      deco.PopulateDecorator = spy();
-
       c = unit.create('n', {populate: function () {}});
       c.should.be.type('object');
 
@@ -80,9 +79,6 @@ describe('CacheClient', function () {
     });
 
     it('should use the populateIn deco on populateIn & populate', function () {
-      deco.PopulateDecorator = spy();
-      deco.PopulateInDecorator = spy();
-
       c = unit.create('n', {populateIn: 200, populate: function () {}});
       c.should.be.type('object');
 
@@ -92,8 +88,6 @@ describe('CacheClient', function () {
     });
 
     it('should not use populateIn without populate', function () {
-      deco.PopulateInDecorator = spy();
-
       c = unit.create('n', {populateIn: 200});
       c.should.be.type('object');
 
