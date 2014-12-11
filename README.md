@@ -190,7 +190,8 @@ The following values are allowed for the config and are
 also available to the `CacheClient#create`:
 ```
 {String} [config.namespace]
-{String} [config.optimizeForSmallValues] defaults to false
+{Boolean} [config.optimizeForSmallValues] defaults to false
+{Boolean} [config.stopEventPropagation] defaults to false
 {String} [config.expiresIn] in ms
 {String} [config.staleIn] in ms
 {Function} [config.populate]
@@ -212,7 +213,25 @@ also available to the `CacheClient#create`:
       of the possible values.
 
 
-### Emitted Events
+### CacheClient-emitted Events
+
+The `CacheClient` events are propagated from the `Cache`s created by the client.
+You can disable event-propagation by setting `config.stopEventPropagation` to `true`.
+
+The following events are emmitted *before* the actual call is completed:
+
+  - `get` - `(key, namespace)`
+  - `set` - `(key, value, namespace)`
+  - `del` -  `(key, namespace)`
+  - `stale` - `(key, namespace)`
+  - `error` - `(error, namespace)`
+
+`error` is emitted by various feature decorators. It is a good idea to listen
+to this event, as otherwise the built-in `EventEmitter` will **throw**
+the error.
+
+
+### Cache-emitted Events
 
 The following events are emmitted *before* the actual call is completed:
 
@@ -220,10 +239,6 @@ The following events are emmitted *before* the actual call is completed:
   - `set` - `(key, value)`
   - `del` -  `(key)`
   - `stale` - `(key)` - emitted on a get, when the value is in the cache but is stale. This happens only when the `staleIn` is set.
-
-`error` is also emitted by various feature decorators. It is a good idea to listen
-to this event, as otherwise the built-in `EventEmitter` will throw
-the error.
 
 
 ### Human-readable Time Intervals

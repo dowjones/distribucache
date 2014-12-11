@@ -10,11 +10,13 @@ describe('CacheClient', function () {
 
     function Cache() {}
     Cache.prototype = {};
+    Cache.prototype.on = spy();
 
     util = {
       createRedisClient: spy(),
       createNamespace: spy(),
-      ensureKeyspaceNotifications: spy()
+      ensureKeyspaceNotifications: spy(),
+      propagateEvents: spy()
     };
 
     deco = {};
@@ -93,6 +95,18 @@ describe('CacheClient', function () {
 
       deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
       deco.PopulateInDecorator.calledOnce.should.not.be.ok;
+    });
+
+    describe('error event propagation', function () {
+      it('should retransmit error events by default', function () {
+        c = unit.create('n');
+        util.propagateEvents.calledOnce.should.be.ok;
+      });
+
+      it('should stop error event propagation if desired', function () {
+        c = unit.create('n', {stopEventPropagation: true});
+        util.propagateEvents.calledOnce.should.not.be.ok;
+      });
     });
   });
 });

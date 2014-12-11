@@ -2,9 +2,10 @@ var proxyquire = require('proxyquire').noCallThru(),
   stub = require('sinon').stub;
 
 describe('util', function () {
-  var util, redis;
+  var noop, util, redis;
 
   beforeEach(function () {
+    noop = function () {};
     redis = {createClient: stub()};
     redis.createClient.returns({auth: stub()});
     util = proxyquire('../lib/util', {
@@ -182,6 +183,15 @@ describe('util', function () {
 
     it('should do nothing if no error', function () {
       util.logError()(null);
+    });
+  });
+
+  describe('propagateEvents', function () {
+    it('should pass the sourceName as the last param', function () {
+      var source = stub({on: noop}), dest = stub({emit: noop});
+      source.on.yields('ooo');
+      util.propagateEvents(source, dest, ['nom'], 'sn');
+      dest.emit.firstCall.args.should.eql(['nom', 'ooo', 'sn']);
     });
   });
 });
