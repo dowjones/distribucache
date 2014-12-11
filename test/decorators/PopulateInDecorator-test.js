@@ -40,14 +40,6 @@ describe('PopulateInDecorator', function () {
     });
   });
 
-  it('should create with a namespace', function () {
-    new PopulateInDecorator(cache, redisClient,{
-      populateIn: 1000,
-      pausePopulateIn: 2000,
-      namespace: 'n'
-    });
-  });
-
   it('should set accessedAt', function () {
     redisClient.hset.yields(null);
     unit.setAccessedAt('k');
