@@ -118,6 +118,7 @@ describe('PopulateDecorator', function () {
     it('should proxy populate error', function (done) {
       var unlock = stub();
       function check(err, val) {
+        err.name.should.equal('PopulateError');
         err.message.should.match(/failed to populate/);
         done();
       }
