@@ -109,4 +109,54 @@ describe('CacheClient', function () {
       });
     });
   });
+
+  describe('unhandledErrorListener', function () {
+    var UNHANDLED_RE = /error from an unhandled/;
+
+    beforeEach(function () {
+      unit = new CacheClient();
+    });
+
+    it('should call the unhandleErrorListener when `error` is unhandled', function (done) {
+      onStderr(function (chunk) {
+        chunk.should.match(UNHANDLED_RE);
+        done();
+      });
+      unit.emit('error', 'test unhandled');
+    });
+
+    it('should not call the unhandleErrorListener when `error` is handled', function (done) {
+      var onerr = onStderr(function (chunk) {
+        if (UNHANDLED_RE.test(chunk)) {
+          throw new Error('unhandled error listener in use');
+        }
+      });
+      unit.on('error', function () {
+        onerr.reset();
+        done();
+      });
+      unit.emit('error', 'test unhandled');
+    });
+  });
 });
+
+/**
+ * Note: I don't like this complexity for listening to stderr, but
+ * I'd rather have the complexity in the test then in the lib.
+ *
+ * Please propose a better way, as long as it does not make
+ * the implementation more complex.
+ */
+
+function onStderr(cb) {
+  var write = process.stderr.write;
+  process.stderr.write = function (chunk) {
+    process.stderr.write = write;
+    cb(chunk);
+  };
+  return {
+    reset: function () {
+      process.stderr.write = write;
+    }
+  };
+}

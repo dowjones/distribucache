@@ -227,8 +227,7 @@ The following events are emmitted *before* the actual call is completed:
   - `error` - `(error, namespace)`
 
 *Note:* `error` is emitted by various feature decorators. It is a good idea to listen
-to this event, as otherwise the built-in `EventEmitter` will **throw**
-the error.
+to this event, as otherwise the the error will be logged to `stderr`.
 
 
 ### Cache-emitted Events
