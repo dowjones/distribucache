@@ -1,6 +1,6 @@
 {
   "name": "distribucache",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "Redis-backed Automatically Populating Cache",
   "repository": {
     "type": "git",
