@@ -79,5 +79,16 @@ describe('PopulateInDecorator', function () {
       redisClient.hget.yields(null, 1);
       unit.leasedPopulate('k', done);
     });
+
+    it('should continue to populate despite an error', function (done) {
+      function check(err) {
+        err.message.should.equal('bad');
+        redisClient.psetex.calledOnce.should.be.ok;
+        done();
+      }
+      redisClient.hget.yields(null, Infinity);
+      cache.leasedPopulate.yields(new Error('bad'));
+      unit.leasedPopulate('k', check);
+    });
   });
 });
