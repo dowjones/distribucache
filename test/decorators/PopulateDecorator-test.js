@@ -77,7 +77,7 @@ describe('PopulateDecorator', function () {
         }
       });
       unit.populate('k', function (err) {
-        err.message.should.match(/could not/);
+        err.message.should.match(/populate threw/);
         done();
       });
     });
