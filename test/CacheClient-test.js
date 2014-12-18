@@ -1,8 +1,10 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  spy = require('sinon').spy;
+  sinon = require('sinon'),
+  stub = sinon.stub,
+  spy = sinon.spy;
 
 describe('CacheClient', function () {
-  var noop, CacheClient, util, unit, deco, c;
+  var noop, CacheClient, util, redisClient, unit, deco, c;
 
   beforeEach(function () {
     var redis;
@@ -13,11 +15,13 @@ describe('CacheClient', function () {
     Cache.prototype.on = spy();
 
     util = {
-      createRedisClient: spy(),
+      createRedisClient: stub(),
       createNamespace: spy(),
       ensureKeyspaceNotifications: spy(),
       propagateEvents: spy()
     };
+    redisClient = stub({on: noop});
+    util.createRedisClient.returns(redisClient);
 
     deco = {};
     deco.OnlySetChangedDecorator = spy(Cache);
@@ -38,6 +42,16 @@ describe('CacheClient', function () {
   it('should create a preconfigured client', function () {
     unit = new CacheClient({isPreconfigured: true});
     util.ensureKeyspaceNotifications.called.should.not.be.ok;
+  });
+
+  it('should call CacheClient#emit on Redis errors', function (done) {
+    unit = new CacheClient();
+    unit.on('error', function (err) {
+      err.message.should.equal('redis error');
+      done();
+    });
+    var onRedisError = redisClient.on.firstCall.args[1];
+    onRedisError(new Error('redis error'));
   });
 
   describe('create', function () {

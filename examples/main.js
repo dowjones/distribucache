@@ -21,7 +21,7 @@ cache = cacheClient.create('randomness', {
 function doIt() {
   var t = Date.now();
   cache.get('k8', function (err, value) {
-    if (err) throw err;
+    if (err) return console.error('[client] ', err);
     console.log('[client] got "%s" in %dms',
       value, Date.now() - t);
   });
