@@ -35,12 +35,23 @@ describe('OnlySetChangedDecorator', function () {
       });
     });
 
-    it('should call not call set but emit set when hash matches (same val)', function (done) {
+    it('should not call set but emit set when hash matches (same val)', function (done) {
       redisClient.hget.yields(null, util.createHash('v'));
       cache.set.yields(null);
       unit.set('k', 'v', function () {
         process.nextTick(function () {
           cache.emit.firstCall.args[0].should.equal('set');
+          done();
+        });
+      });
+    });
+
+    it('should not set hash if set had an error', function (done) {
+      redisClient.hget.yields(null, 'h');
+      cache.set.yields(new Error('bad'));
+      unit.set('k', 'v', function () {
+        process.nextTick(function () {
+          redisClient.hset.calledOnce.should.not.be.ok;
           done();
         });
       });
