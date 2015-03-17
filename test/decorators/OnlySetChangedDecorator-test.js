@@ -4,39 +4,41 @@ var all = require('../_all'),
   stub = require('sinon').stub,
   joi = require('joi');
 
-describe('OnlySetChangedDecorator', function () {
-  var unit, cache, noop, redisClient;
+describe('decorators/OnlySetChangedDecorator', function () {
+  var unit, cache, noop, store;
 
   beforeEach(function () {
     function noop() {}
     cache = stub({
       on: noop,
       emit: noop,
-      _getClient: noop,
-      _getDataKey: noop,
+      _getStore: noop,
       get: noop,
       del: noop,
       set: noop
     });
-    redisClient = stub({hset: noop, hget: noop});
-    cache._getClient.returns(redisClient);
+    store = stub({
+      getHash: noop,
+      setHash: noop
+    });
+    cache._getStore.returns(store);
     unit = new OnlySetChangedDecorator(cache, {});
   });
 
   describe('set', function () {
     it('should call set when the hash does not match', function (done) {
-      redisClient.hget.yields(null, 'h');
+      store.getHash.yields(null, 'h');
       cache.set.yields(null);
       unit.set('k', 'v', function () {
         process.nextTick(function () {
-          redisClient.hset.calledOnce.should.be.ok;
+          store.getHash.calledOnce.should.be.ok;
           done();
         });
       });
     });
 
     it('should not call set but emit set when hash matches (same val)', function (done) {
-      redisClient.hget.yields(null, util.createHash('v'));
+      store.getHash.yields(null, util.createHash('v'));
       cache.set.yields(null);
       unit.set('k', 'v', function () {
         process.nextTick(function () {
@@ -47,11 +49,11 @@ describe('OnlySetChangedDecorator', function () {
     });
 
     it('should not set hash if set had an error', function (done) {
-      redisClient.hget.yields(null, 'h');
+      store.getHash.yields(null, 'h');
       cache.set.yields(new Error('bad'));
       unit.set('k', 'v', function () {
         process.nextTick(function () {
-          redisClient.hset.calledOnce.should.not.be.ok;
+          store.setHash.calledOnce.should.not.be.ok;
           done();
         });
       });

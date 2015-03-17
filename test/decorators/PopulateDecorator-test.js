@@ -2,9 +2,9 @@ var proxyquire = require('proxyquire').noCallThru(),
   stub = require('sinon').stub,
   joi = require('joi');
 
-describe('PopulateDecorator', function () {
-  var PopulateDecorator, unit, cache, noop, redisClient,
-    populate, lockr, lease;
+describe('decorators/PopulateDecorator', function () {
+  var PopulateDecorator, unit, cache,
+    noop, store, lease, populate;
 
   beforeEach(function () {
     var modulePath;
@@ -13,24 +13,23 @@ describe('PopulateDecorator', function () {
     cache = stub({
       on: noop,
       emit: noop,
-      _getClient: noop,
-      _getDataKey: noop,
+      _getStore: noop,
       get: noop,
       del: noop,
       set: noop
     });
-    redisClient = stub({hset: noop, hget: noop});
-    cache._getClient.returns(redisClient);
+
+    store = stub({
+      createLease: noop
+    });
+    lease = stub();
+    store.createLease.returns(lease);
+    cache._getStore.returns(store);
 
     populate = stub();
 
-    lease = stub();
-    lockr = stub();
-    lockr.returns(lease);
-
     modulePath = '../../lib/decorators/PopulateDecorator';
     PopulateDecorator = proxyquire(modulePath, {
-      'redis-lockr': lockr
     });
 
     unit = new PopulateDecorator(cache, {
@@ -102,16 +101,18 @@ describe('PopulateDecorator', function () {
     });
 
     it('should not return an error or populate if locked', function (done) {
-      lease.yields(new Error('Exceeded max retry count'));
+      var err = new Error();
+      err.name = 'AlreadyLeasedError';
+      lease.yields(err);
       unit.leasedPopulate('k', done);
     });
 
     it('should return an error if lock returned one', function (done) {
       function check(err) {
-        err.message.should.match(/could not aquire lock/);
+        err.message.should.match(/good/);
         done();
       }
-      lease.yields(new Error('bad'));
+      lease.yields(new Error('good'));
       unit.leasedPopulate('k', check);
     });
 

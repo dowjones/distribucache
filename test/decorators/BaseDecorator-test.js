@@ -2,7 +2,7 @@ var BaseDecorator = require('../_all').decorators.BaseDecorator,
   stub = require('sinon').stub,
   joi = require('joi');
 
-describe('BaseDecorator', function () {
+describe('decorators/BaseDecorator', function () {
   var cache, noop;
 
   beforeEach(function () {

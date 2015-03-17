@@ -1,11 +1,9 @@
 var proxyquire = require('proxyquire').noCallThru(),
   stub = require('sinon').stub,
-
   joi = require('joi');
 
-describe('PopulateInDecorator', function () {
-  var PopulateInDecorator, unit, cache, noop,
-    redisClient, listener;
+describe('decorators/PopulateInDecorator', function () {
+  var PopulateInDecorator, unit, cache, noop, store;
 
   beforeEach(function () {
     var modulePath;
@@ -15,45 +13,44 @@ describe('PopulateInDecorator', function () {
       on: noop,
       emit: noop,
       leasedPopulate: noop,
-      _getClient: noop,
-      _getDataKey: noop,
+      _getStore: noop,
       get: noop,
       del: noop,
       set: noop
     });
 
-    redisClient = stub({hset: noop, hget: noop, psetex: noop});
-    cache._getClient.returns(redisClient);
-
-    listener = stub({listen: noop, on: noop});
-    var ExpiryListener = function () {};
-    ExpiryListener.prototype = listener;
+    store = stub({
+      on: noop,
+      getAccessedAt: noop,
+      setAccessedAt: noop,
+      setTimeout: noop
+    });
+    cache._getStore.returns(store);
 
     modulePath = '../../lib/decorators/PopulateInDecorator';
     PopulateInDecorator = proxyquire(modulePath, {
-      '../ExpiryListener': ExpiryListener
     });
 
-    unit = new PopulateInDecorator(cache, redisClient, {
+    unit = new PopulateInDecorator(cache, {
       populateIn: 1000,
       pausePopulateIn: 2000
     });
   });
 
   it('should set accessedAt', function () {
-    redisClient.hset.yields(null);
+    store.setAccessedAt.yields(null);
     unit.setAccessedAt('k');
-    redisClient.hset.calledOnce.should.be.ok;
+    store.setAccessedAt.calledOnce.should.be.ok;
   });
 
   it('should set a trigger', function () {
-    redisClient.psetex.yields(null);
-    unit.setTrigger('k');
-    redisClient.psetex.calledOnce.should.be.ok;
+    store.setTimeout.yields(null);
+    unit.setTimeout('k');
+    store.setTimeout.calledOnce.should.be.ok;
   });
 
   it('should call leasedPopulate on expiredEvent', function (done) {
-     var onExpiredEvent = listener.on.lastCall.args[1];
+     var onExpiredEvent = store.on.lastCall.args[1];
      unit.leasedPopulate = function (k, cb) {
        k.should.equal('k');
        cb.should.be.type('function');
@@ -64,29 +61,29 @@ describe('PopulateInDecorator', function () {
 
   describe('leasedPopulate', function () {
     it('should populate if no accessedAt', function (done) {
-      redisClient.hget.yields(null, null);
+      store.getAccessedAt.yields(null, null);
       cache.leasedPopulate.yields(null);
       unit.leasedPopulate('k', done);
     });
 
     it('should populate if accessedAt and not paused', function (done) {
-      redisClient.hget.yields(null, Infinity);
+      store.getAccessedAt.yields(null, Infinity);
       cache.leasedPopulate.yields(null);
       unit.leasedPopulate('k', done);
     });
 
     it('should not populate if accessedAt but paused', function (done) {
-      redisClient.hget.yields(null, 1);
+      store.getAccessedAt.yields(null, 1);
       unit.leasedPopulate('k', done);
     });
 
     it('should continue to populate despite an error', function (done) {
       function check(err) {
         err.message.should.equal('bad');
-        redisClient.psetex.calledOnce.should.be.ok;
+        store.setTimeout.calledOnce.should.be.ok;
         done();
       }
-      redisClient.hget.yields(null, Infinity);
+      store.getAccessedAt.yields(null, Infinity);
       cache.leasedPopulate.yields(new Error('bad'));
       unit.leasedPopulate('k', check);
     });
