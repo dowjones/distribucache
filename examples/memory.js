@@ -6,7 +6,7 @@ var distribucache = require('../lib'),
 
 cache = cacheClient.create('randomness', {
   staleIn: '10 sec',
-  populateIn: '1 sec',
+  populateIn: '5 sec',
   pausePopulateIn: '1 min',
   populate: function (key, cb) {
     setTimeout(function () {

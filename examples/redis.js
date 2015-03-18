@@ -11,6 +11,7 @@ cache = cacheClient.create('randomness', {
   populate: function (key, cb) {
     setTimeout(function () {
       var value = Math.round(Math.random() * 1000);
+      console.log('[client] populating with:', value);
       cb(null, value);
     }, 250);
   }
