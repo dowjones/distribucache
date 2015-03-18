@@ -1,14 +1,15 @@
 var distribucache = require('../lib'),
-  cacheClient = distribucache.createClient({
+  redisStore = require('distribucache-redis-store'),
+  cacheClient = distribucache.createClient(redisStore({
     host: 'localhost',
     port: 6379
-  }),
+  })),
   cache;
 
 cache = cacheClient.create('randomness', {
   staleIn: '10 sec',
-  //populateIn: '5 sec',
-  //pausePopulateIn: '1 min',
+  populateIn: '5 sec',
+  pausePopulateIn: '1 min',
   populate: function (key, cb) {
     setTimeout(function () {
       var value = Math.round(Math.random() * 1000);

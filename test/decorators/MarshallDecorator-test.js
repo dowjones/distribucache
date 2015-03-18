@@ -2,7 +2,7 @@ var MarshallDecorator = require('../_all')
     .decorators.MarshallDecorator,
   stub = require('sinon').stub;
 
-describe('MarshallDecorator', function () {
+describe('decorators/MarshallDecorator', function () {
   var unit, cache;
 
   beforeEach(function () {

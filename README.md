@@ -1,9 +1,13 @@
 # Distribucache [![Build Status](https://secure.travis-ci.org/areusjs/distribucache.png)](http://travis-ci.org/areusjs/distribucache) [![NPM version](https://badge.fury.io/js/distribucache.svg)](http://badge.fury.io/js/distribucache)
 
-Redis-backed automatically-repopulating cache. This cache does everything in
+Datastore-independent automatically-repopulating cache. This cache does everything in
 its power to shield the caller from the delays of the downstream services. It has a unique
 feature, where the cache will populate itself on a certain interval, and will
-gracefully stop doing so when the values that were being refreshed have not been used.
+stop doing so when the values that were being refreshed have not been used.
+
+There are multiple available **datastores**, including:
+  - [Redis](https://github.com/areusjs/distribucache-redis-store)
+  - [Memory](https://github.com/areusjs/distribucache-memory-store)
 
 The cache can be used in various ways, ranging from the simplest get / set, to
 complex scenarious with watermarks for staleness and final expiration.
@@ -18,12 +22,13 @@ based on the configuration that you use. Below is an example of the simplest cac
 
 ```javascript
 var dc = require('distribucache'),
-  // create a cache-client (keeps track of the Redis connections)
+  // create a Redis store (to keep track of the Redis connections)
   // generally performed once in the lifetime of the app
-  cacheClient = dc.createClient({
+  redisStore = require('distribucache-redis-store'),
+  cacheClient = distribucache.createClient(redisStore({
     host: 'localhost',
     port: 6379
-  }),
+  })),
   // create a new cache
   // performed every time a new cache configuration is needed
   cache = cacheClient.create('nsp');
@@ -55,9 +60,7 @@ and (b) when creating a cache. As you expect, the configuration in the
 cache overrides the configuration of the cache-client:
 
 ```javascript
-var cacheClient = dc.createClient({
-  host: 'localhost',
-  port: 6379,
+var cacheClient = dc.createClient(store, {
   expiresIn: '2 sec'   // setting globally
 });
 
@@ -125,7 +128,7 @@ var cache = cacheClient.create('nsp', {
 
 ### Timer-based Background Population
 
-The trickiest, yet most powerful feature of the cache is its ability
+The more complex, yet most powerful feature of the cache is its ability
 to update its keys on a specific interval. To do this set the `populateIn`
 config. You must also set a `pausePopulateIn` to make sure the cache
 is not re-populated forever needlessly.
@@ -142,9 +145,9 @@ var cache = cacheClient.create('nsp', {
 });
 ```
 
-*Note:* this feature will work even with disruptions to the service, as the burder
-of determining which keys need to be re-populated is on Redis (using a combination
-of keyspace events and expiring keys).
+*Note:* this feature will work even with disruptions to the service, as the burden
+of determining which keys need to be re-populated is on the store (e.g., in the Redis store this
+is done using a combination of keyspace events and expiring keys).
 
 
 ### Stored Value Size Optimization
@@ -177,16 +180,10 @@ var cache = cacheClient.create('nsp', {
 
 #### Distribucache
 
-  - `createClient(config)`
+  - `createClient(store, config)`
 
-Possible `config` values:
-```
-{String} [config.host] defaults to 'localhost'
-{Number} [config.port] defaults to 6379
-{String} [config.password]
-```
-
-The following values are allowed for the config and are
+Possible `config` values below.
+**Note:** The following values are allowed for the config and are
 also available to the `CacheClient#create`:
 ```
 {String} [config.namespace]
@@ -232,7 +229,7 @@ to this event, as otherwise the the error will be logged to `stderr`.
 
 ### Cache-emitted Events
 
-The following events are emmitted *before* the actual call is completed:
+The following events are emmitted *before* the call is completed:
 
   - `get` - `(key)`
   - `set` - `(key, value)`

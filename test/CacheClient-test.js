@@ -4,7 +4,7 @@ var proxyquire = require('proxyquire').noCallThru(),
   spy = sinon.spy;
 
 describe('CacheClient', function () {
-  var noop, CacheClient, util, redisClient, unit, deco, c;
+  var noop, store, CacheClient, util, unit, deco, c;
 
   beforeEach(function () {
     var redis;
@@ -14,14 +14,16 @@ describe('CacheClient', function () {
     Cache.prototype = {};
     Cache.prototype.on = spy();
 
+    function Store() {}
+    Store.prototype = {};
+    Store.prototype.on = spy();
+
     util = {
-      createRedisClient: stub(),
       createNamespace: spy(),
       ensureKeyspaceNotifications: spy(),
-      propagateEvents: spy()
+      propagateEvents: spy(),
+      propagateEvent: spy()
     };
-    redisClient = stub({on: noop});
-    util.createRedisClient.returns(redisClient);
 
     deco = {};
     deco.OnlySetChangedDecorator = spy(Cache);
@@ -33,25 +35,18 @@ describe('CacheClient', function () {
     CacheClient = proxyquire('../lib/CacheClient', {
       './Cache': Cache,
       './util': util,
+      './datastore/redis': Store,
       'require-directory': function () {
         return deco;
       }
     });
+
+    store = stub({on: noop});
   });
 
   it('should create a preconfigured client', function () {
-    unit = new CacheClient({isPreconfigured: true});
+    unit = new CacheClient(store, {isPreconfigured: true});
     util.ensureKeyspaceNotifications.called.should.not.be.ok;
-  });
-
-  it('should call CacheClient#emit on Redis errors', function (done) {
-    unit = new CacheClient();
-    unit.on('error', function (err) {
-      err.message.should.equal('redis error');
-      done();
-    });
-    var onRedisError = redisClient.on.firstCall.args[1];
-    onRedisError(new Error('redis error'));
   });
 
   describe('create', function () {

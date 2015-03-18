@@ -3,23 +3,16 @@ var Cache = require('./_all').Cache,
   spy = require('sinon').spy;
 
 describe('Cache', function () {
-  var unit, redisClient;
+  var unit, store;
 
   beforeEach(function () {
     function noop() {}
-    redisClient = stub({
-      hget: noop,
-      hset: noop,
+    store = stub({
+      getValue: noop,
+      setValue: noop,
       del: noop
     });
-    unit = new Cache(redisClient);
-  });
-
-  it('should create a cache without config', function () {
-    new Cache(redisClient, {namespace: 'n'});
-    (function () {
-      new Cache(redisClient, {unknownConfig: 'a'});
-    }).should.throw(/unknownConfig/);
+    unit = new Cache(store);
   });
 
   describe('get', function () {
@@ -32,7 +25,7 @@ describe('Cache', function () {
         done();
       }
 
-      redisClient.hget.yields(null);
+      store.getValue.yields(null);
       unit.get('k', check);
     });
 
@@ -41,7 +34,7 @@ describe('Cache', function () {
         err.message.should.equal('handled');
         done();
       }
-      redisClient.hget.yields(new Error('handled'));
+      store.getValue.yields(new Error('handled'));
       unit.get('k', check);
     });
   });
@@ -56,7 +49,7 @@ describe('Cache', function () {
         done();
       }
 
-      redisClient.hset.yields(null, 'ok');
+      store.setValue.yields(null, 'ok');
       unit.set('k', 'v', check);
     });
   });
@@ -71,14 +64,15 @@ describe('Cache', function () {
         done();
       }
 
-      redisClient.del.yields(null);
+      store.del.yields(null);
       unit.del('k', check);
     });
   });
 
-  describe('_getClient', function () {
-    it('should get the redis client', function () {
-      unit._getClient().should.equal(redisClient);
+  // protected
+  describe('_getStore', function () {
+    it('should get store', function () {
+      unit._getStore().getValue.should.be.type('function');
     });
   });
 });

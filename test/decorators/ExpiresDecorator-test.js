@@ -2,46 +2,48 @@ var ExpiresDecorator = require('../_all').decorators.ExpiresDecorator,
   stub = require('sinon').stub,
   joi = require('joi');
 
-describe('ExpiresDecorator', function () {
-  var unit, cache, noop, redisClient;
+describe('decorators/ExpiresDecorator', function () {
+  var unit, cache, noop, store;
 
   beforeEach(function () {
     function noop() {}
     cache = stub({
       on: noop,
       emit: noop,
-      _getClient: noop,
-      _getDataKey: noop,
+      _getStore: noop,
       get: noop,
       del: noop
     });
-    redisClient = stub({hset: noop, hget: noop});
-    cache._getClient.returns(redisClient);
+    store = stub({
+      setCreatedAt: noop,
+      getCreatedAt: noop
+    });
+    cache._getStore.returns(store);
     unit = new ExpiresDecorator(cache, {});
   });
 
   describe('setCreatedAt', function () {
     it('should set the createdAt timestamp', function () {
-      redisClient.hset.yields(null);
+      store.setCreatedAt.yields(null);
       unit.setCreatedAt('k');
-      redisClient.hset.calledOnce.should.be.ok;
+      store.setCreatedAt.calledOnce.should.be.ok;
     });
   });
 
   describe('get', function () {
     it('should yield null if createdAt is null (not in cache)', function (done) {
-      redisClient.hget.yields(null, null);
+      store.getCreatedAt.yields(null, null);
       unit.get('k', done);
     });
 
     it('should look at createdAt first and if not expired call get', function (done) {
-      redisClient.hget.yields(null, '0');
+      store.getCreatedAt.yields(null, '0');
       cache.get.yields(null);
       unit.get('k', done);
     });
 
     it('should yield null if expired and call del', function (done) {
-      redisClient.hget.yields(null, '0');
+      store.getCreatedAt.yields(null, '0');
       unit = new ExpiresDecorator(cache, {expiresIn: 0});
       unit.get('k', function () {
         cache.del.called.should.be.ok;
@@ -50,7 +52,7 @@ describe('ExpiresDecorator', function () {
     });
 
     it('should call get if stale emit stale', function (done) {
-      redisClient.hget.yields(null, '0');
+      store.getCreatedAt.yields(null, '0');
       cache.get.yields(null);
       unit = new ExpiresDecorator(cache, {staleIn: 0});
       unit.get('k', function () {
