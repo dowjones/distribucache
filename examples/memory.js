@@ -1,7 +1,6 @@
 var distribucache = require('../lib'),
-  MemoryStore = require('distribucache-memory-store'),
-  store = new MemoryStore(),
-  cacheClient = distribucache.createClient(store),
+  memoryStore = require('distribucache-memory-store'),
+  cacheClient = distribucache.createClient(memoryStore()),
   cache;
 
 cache = cacheClient.create('randomness', {

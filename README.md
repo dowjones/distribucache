@@ -24,9 +24,11 @@ based on the configuration that you use. Below is an example of the simplest cac
 var dc = require('distribucache'),
   // create a Redis store (to keep track of the Redis connections)
   // generally performed once in the lifetime of the app
-  RedisStore = require('distribucache-redis-store'),
-  store = new RedisStore({host: 'localhost', port: 6379}),
-  cacheClient = dc.createClient(store),
+  redisStore = require('distribucache-redis-store'),
+  cacheClient = distribucache.createClient(redisStore({
+    host: 'localhost',
+    port: 6379
+  })),
   // create a new cache
   // performed every time a new cache configuration is needed
   cache = cacheClient.create('nsp');

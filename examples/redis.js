@@ -1,7 +1,9 @@
 var distribucache = require('../lib'),
-  RedisStore = require('distribucache-redis-store'),
-  store = new RedisStore({host: 'localhost', port: 6379}),
-  cacheClient = distribucache.createClient(store),
+  redisStore = require('distribucache-redis-store'),
+  cacheClient = distribucache.createClient(redisStore({
+    host: 'localhost',
+    port: 6379
+  })),
   cache;
 
 cache = cacheClient.create('randomness', {
