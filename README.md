@@ -5,9 +5,9 @@ its power to shield the caller from the delays of the downstream services. It ha
 feature, where the cache will populate itself on a certain interval, and will
 gracefully stop doing so when the values that were being refreshed have not been used.
 
-There are multiple available datastores, including:
-  - [redis-store](https://github.com/areusjs/distribucache-redis-store)
-  - [memory-store](https://github.com/areusjs/distribucache-memory-store)
+There are multiple available **datastores**, including:
+  - [Redis](https://github.com/areusjs/distribucache-redis-store)
+  - [Memory](https://github.com/areusjs/distribucache-memory-store)
 
 The cache can be used in various ways, ranging from the simplest get / set, to
 complex scenarious with watermarks for staleness and final expiration.
