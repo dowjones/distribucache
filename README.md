@@ -3,7 +3,7 @@
 Datastore-independent automatically-repopulating cache. This cache does everything in
 its power to shield the caller from the delays of the downstream services. It has a unique
 feature, where the cache will populate itself on a certain interval, and will
-gracefully stop doing so when the values that were being refreshed have not been used.
+stop doing so when the values that were being refreshed have not been used.
 
 There are multiple available **datastores**, including:
   - [Redis](https://github.com/areusjs/distribucache-redis-store)
@@ -128,7 +128,7 @@ var cache = cacheClient.create('nsp', {
 
 ### Timer-based Background Population
 
-The trickiest, yet most powerful feature of the cache is its ability
+The more complex, yet most powerful feature of the cache is its ability
 to update its keys on a specific interval. To do this set the `populateIn`
 config. You must also set a `pausePopulateIn` to make sure the cache
 is not re-populated forever needlessly.
@@ -229,7 +229,7 @@ to this event, as otherwise the the error will be logged to `stderr`.
 
 ### Cache-emitted Events
 
-The following events are emmitted *before* the actual call is completed:
+The following events are emmitted *before* the call is completed:
 
   - `get` - `(key)`
   - `set` - `(key, value)`
