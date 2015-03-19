@@ -21,7 +21,7 @@ There are many different ways to use the cache. Features are added to the cache,
 based on the configuration that you use. Below is an example of the simplest cache:
 
 ```javascript
-var dc = require('distribucache'),
+var distribucache = require('distribucache'),
   // create a Redis store (to keep track of the Redis connections)
   // generally performed once in the lifetime of the app
   redisStore = require('distribucache-redis-store'),
@@ -60,7 +60,7 @@ and (b) when creating a cache. As you expect, the configuration in the
 cache overrides the configuration of the cache-client:
 
 ```javascript
-var cacheClient = dc.createClient(store, {
+var cacheClient = distribucache.createClient(store, {
   expiresIn: '2 sec'   // setting globally
 });
 
