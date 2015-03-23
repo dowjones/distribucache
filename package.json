@@ -16,7 +16,7 @@
   "scripts": {
     "test": "sh -c 'npm run test-cover && istanbul check-coverage --statements 95 --functions 95 --branches 95 --lines 95'",
     "test-cover": "istanbul cover _mocha -- -r should --recursive",
-    "test-watch": "mocha -r should --recursive -w -R min"
+    "test-watch": "mocha -r should --recursive -w -R min -t 20"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "distribucache-memory-store": "^1.0.0",
-    "distribucache-redis-store": "^2.0.0",
+    "distribucache-redis-store": "^2.0.1",
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "proxyquire": "^1.1.0",
