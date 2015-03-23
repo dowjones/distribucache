@@ -1,9 +1,9 @@
 var distribucache = require('../lib'),
+  //memoryStore = require('distribucache-memory-store'),
+  //store = memoryStore(),
   redisStore = require('distribucache-redis-store'),
-  cacheClient = distribucache.createClient(redisStore({
-    host: 'localhost',
-    port: 6379
-  })),
+  store = redisStore({namespace: 'ex', host: 'localhost', port: 6379}),
+  cacheClient = distribucache.createClient(store),
   cache;
 
 cache = cacheClient.create('randomness', {
@@ -23,8 +23,8 @@ function doIt() {
   var t = Date.now();
   cache.get('k8', function (err, value) {
     if (err) return console.error('[client] ', err);
-    console.log('[client] got "%s" in %dms',
-      value, Date.now() - t);
+    console.log('[client] got `%j` (type: %s) in %dms',
+      value, typeof value, Date.now() - t);
   });
 }
 
