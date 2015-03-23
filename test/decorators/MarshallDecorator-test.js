@@ -61,5 +61,14 @@ describe('decorators/MarshallDecorator', function () {
       cache.set.yields(null, '');
       unit.set('k', {a: 42, b: true}, check);
     });
+
+    it('should marshall `undefined` as `null`', function (done) {
+      function check(err) {
+        cache.set.lastCall.args[1].should.equal('null');
+        done();
+      }
+      cache.set.yields(null, '');
+      unit.set('k', undefined, check);
+    });
   });
 });
