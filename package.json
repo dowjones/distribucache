@@ -1,6 +1,6 @@
 {
   "name": "distribucache",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Store-backed Automatically Populating Cache",
   "keywords": [
     "cache",
@@ -26,8 +26,8 @@
     "require-directory": "^2.1.0"
   },
   "devDependencies": {
-    "distribucache-memory-store": "^1.0.0",
-    "distribucache-redis-store": "^2.0.1",
+    "distribucache-memory-store": "^3.0.0",
+    "distribucache-redis-store": "^3.0.0",
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "proxyquire": "^1.1.0",

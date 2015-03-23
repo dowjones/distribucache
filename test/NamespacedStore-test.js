@@ -12,6 +12,7 @@ describe('NamespacedStore', function () {
 
     api = {
       createLease: noop,
+      createTimer: noop,
       del: noop,
       getAccessedAt: noop,
       getCreatedAt: noop,
@@ -21,7 +22,6 @@ describe('NamespacedStore', function () {
       setCreatedAt: noop,
       setHash: noop,
       setValue: noop,
-      setTimeout: noop,
       on: noop
     };
 
@@ -30,12 +30,11 @@ describe('NamespacedStore', function () {
     unit = new NamespacedStore(store, 'n');
 
     unit._toStoreKey = spy(unit, '_toStoreKey');
-    unit._fromStoreKey = spy(unit, '_fromStoreKey');
   });
 
   it('should use _toStoreKey for simple methods', function (done) {
     var simpleMethods = Object.keys(api).filter(function (name) {
-      return (name !== 'createLease' && name !== 'on');
+      return (name !== 'createLease' && name !== 'createTimer'  && name !== 'on');
     });
 
     function test(methodName, cb) {
@@ -74,22 +73,17 @@ describe('NamespacedStore', function () {
     });
   });
 
-  describe('on', function () {
-    it('should use _fromStoreKey for `on(\'timeout\')`', function (done) {
-      store.on.yields('n:k');
-      unit.on('timeout', function (key) {
-        key.should.equal('k');
-        done();
-      });
+  it('should proxy on events', function (done) {
+    store.on.yields('blah');
+    unit.on('error', function (val) {
+      val.should.equal('blah');
+      done();
     });
+  });
 
-    it('should not use _* for non `timeout` events', function (done) {
-      store.on.yields('l');
-      unit.on('b', function () {
-        unit._toStoreKey.calledOnce.should.not.be.ok;
-        unit._fromStoreKey.calledOnce.should.not.be.ok;
-        done();
-      });
-    });
+  it('should proxy createTimer', function () {
+    unit.createTimer();
+    store.createTimer.calledOnce;
+    store.createTimer.lastCall.args[0].should.equal('n');
   });
 });

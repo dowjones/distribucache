@@ -3,7 +3,7 @@ var proxyquire = require('proxyquire').noCallThru(),
   joi = require('joi');
 
 describe('decorators/PopulateInDecorator', function () {
-  var PopulateInDecorator, unit, cache, noop, store;
+  var PopulateInDecorator, unit, cache, noop, store, timer;
 
   beforeEach(function () {
     var modulePath;
@@ -19,12 +19,19 @@ describe('decorators/PopulateInDecorator', function () {
       set: noop
     });
 
+    timer = stub({
+      on: noop,
+      setTimeout: noop
+    });
+
     store = stub({
       on: noop,
       getAccessedAt: noop,
       setAccessedAt: noop,
-      setTimeout: noop
+      createTimer: noop
     });
+    store.createTimer.returns(timer);
+
     cache._getStore.returns(store);
 
     modulePath = '../../lib/decorators/PopulateInDecorator';
@@ -44,19 +51,19 @@ describe('decorators/PopulateInDecorator', function () {
   });
 
   it('should set a trigger', function () {
-    store.setTimeout.yields(null);
+    timer.setTimeout.yields(null);
     unit.setTimeout('k');
-    store.setTimeout.calledOnce.should.be.ok;
+    timer.setTimeout.calledOnce.should.be.ok;
   });
 
-  it('should call leasedPopulate on expiredEvent', function (done) {
-     var onExpiredEvent = store.on.lastCall.args[1];
+  it('should call leasedPopulate on `timeout`', function (done) {
+     var _onTimeout = timer.on.lastCall.args[1];
      unit.leasedPopulate = function (k, cb) {
        k.should.equal('k');
        cb.should.be.type('function');
        done();
      };
-     onExpiredEvent('k');
+     _onTimeout('k');
   });
 
   describe('leasedPopulate', function () {
@@ -80,7 +87,7 @@ describe('decorators/PopulateInDecorator', function () {
     it('should continue to populate despite an error', function (done) {
       function check(err) {
         err.message.should.equal('bad');
-        store.setTimeout.calledOnce.should.be.ok;
+        timer.setTimeout.calledOnce.should.be.ok;
         done();
       }
       store.getAccessedAt.yields(null, Infinity);
