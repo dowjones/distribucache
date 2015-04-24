@@ -194,6 +194,7 @@ also available to the `CacheClient#create`:
 {Function} [config.populate]
 {Number} [config.populateIn] in ms, defaults to 30sec
 {Number} [config.pausePopulateIn] in ms
+{Number} [config.timeoutPopulateIn] in ms
 {Number} [config.leaseExpiresIn] in ms
 {Number} [config.accessedAtThrottle] in ms
 ```
