@@ -116,11 +116,12 @@ describe('decorators/PopulateDecorator', function () {
       unit.leasedPopulate('k', check);
     });
 
-    it('should proxy populate error', function (done) {
+    it('should proxy populate error and unlock', function (done) {
       var unlock = stub();
       function check(err, val) {
         err.name.should.equal('PopulateError');
         err.message.should.match(/failed to populate/);
+        unlock.calledOnce.should.be.ok;
         done();
       }
       lease.yields(null, unlock);
