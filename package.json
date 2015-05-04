@@ -1,6 +1,6 @@
 {
   "name": "distribucache",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "description": "Store-backed Automatically Populating Cache",
   "keywords": [
     "cache",
@@ -14,7 +14,7 @@
   "author": "nemtsov@gmail.com",
   "main": "./lib",
   "scripts": {
-    "test": "sh -c 'npm run test-cover && istanbul check-coverage --statements 95 --functions 95 --branches 95 --lines 95'",
+    "test": "sh -c 'npm run test-cover && istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100'",
     "test-cover": "istanbul cover _mocha -- -r should --recursive",
     "test-watch": "mocha -r should --recursive -w -R min -t 20"
   },
