@@ -193,10 +193,11 @@ also available to the `CacheClient#create`:
 {String} [config.staleIn] in ms
 {Function} [config.populate]
 {Number} [config.populateIn] in ms, defaults to 30sec
-{Number} [config.pausePopulateIn] in ms
+{Number} [config.populateInAttempts] defaults to 5
+{Number} [config.pausePopulateIn] in ms, defaults to 30sec
 {Number} [config.timeoutPopulateIn] in ms
 {Number} [config.leaseExpiresIn] in ms
-{Number} [config.accessedAtThrottle] in ms
+{Number} [config.accessedAtThrottle] in ms, defaults to 1000
 ```
 
 #### CacheClient

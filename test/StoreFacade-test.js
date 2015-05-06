@@ -15,8 +15,10 @@ describe('StoreFacade', function () {
       createTimer: noop,
       expire: noop,
       del: noop,
-      get: noop,
-      set: noop,
+      delProp: noop,
+      getProp: noop,
+      setProp: noop,
+      incrPropBy: noop,
       on: noop
     };
 
@@ -30,7 +32,8 @@ describe('StoreFacade', function () {
   it('should use _toStoreKey for simple methods', function (done) {
     var simpleMethods = Object.keys(StoreFacade.prototype).filter(function (name) {
       return (name !== 'createLease' && name !== 'createTimer'  &&
-        name !== 'on' && name[0] !== '_');
+        name !== 'on' && name[0] !== '_' && name !== 'resetPopulateInErrorCount' &&
+        name !== 'incrementPopulateInErrorCount');
     });
 
     function test(methodName, cb) {
@@ -47,14 +50,34 @@ describe('StoreFacade', function () {
         cb();
       }
 
-      if (/^get/.test(methodName)) store.get.yields(null);
-      else if (/^set/.test(methodName)) store.set.yields(null);
+      if (/^get/.test(methodName)) store.getProp.yields(null);
+      else if (/^set/.test(methodName)) store.setProp.yields(null);
       else store[methodName].yields(null);
 
       unit[methodName].apply(unit, args);
     }
 
     async.map(simpleMethods, test, done);
+  });
+
+  describe('populateInErrorCount', function () { 
+    it('should be incremented', function (done) {
+      function check(err) {
+        store.incrPropBy.calledOnce.should.be.ok;
+        done(err);
+      }
+      store.incrPropBy.yields(null);
+      unit.incrementPopulateInErrorCount('k', check);
+    });
+
+    it('should be deleted when reset', function (done) {
+      function check(err) {
+        store.delProp.calledOnce.should.be.ok;
+        done(err);
+      }
+      store.delProp.yields(null);
+      unit.resetPopulateInErrorCount('k', check);
+    });
   });
 
   it('should use _toStoreKey for createLease', function (done) {
@@ -88,7 +111,7 @@ describe('StoreFacade', function () {
 
   describe('methods that expect numbers back', function () {
     it('should yield an error if the store returns an error', function (done) {
-      store.get.yields('e');
+      store.getProp.yields('e');
       unit.getAccessedAt(null, function (err) {
         err.should.equal('e');
         done();
@@ -96,7 +119,7 @@ describe('StoreFacade', function () {
     });
 
     it('should yield a number if the store returns a string', function (done) {
-      store.get.yields(null, '77');
+      store.getProp.yields(null, '77');
       unit.getCreatedAt(null, function (err, val) {
         val.should.equal(77);
         done(err);
@@ -104,7 +127,7 @@ describe('StoreFacade', function () {
     });
 
     it('should yield a number if the store returns a number', function (done) {
-      store.get.yields(null, 33);
+      store.getProp.yields(null, 33);
       unit.getAccessedAt(null, function (err, val) {
         val.should.equal(33);
         done(err);
