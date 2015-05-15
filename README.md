@@ -1,4 +1,4 @@
-# Distribucache [![Build Status](https://secure.travis-ci.org/areusjs/distribucache.png)](http://travis-ci.org/areusjs/distribucache) [![NPM version](https://badge.fury.io/js/distribucache.svg)](http://badge.fury.io/js/distribucache)
+# Distribucache [![Build Status](https://secure.travis-ci.org/dowjones/distribucache.png)](http://travis-ci.org/dowjones/distribucache) [![NPM version](https://badge.fury.io/js/distribucache.svg)](http://badge.fury.io/js/distribucache)
 
 Datastore-independent automatically-repopulating cache. This cache does everything in
 its power to shield the caller from the delays of the downstream services. It has a unique
@@ -6,8 +6,8 @@ feature, where the cache will populate itself on a certain interval, and will
 stop doing so when the values that were being refreshed have not been used.
 
 There are multiple available **datastores**, including:
-  - [Redis](https://github.com/areusjs/distribucache-redis-store)
-  - [Memory](https://github.com/areusjs/distribucache-memory-store)
+  - [Redis](https://github.com/dowjones/distribucache-redis-store)
+  - [Memory](https://github.com/dowjones/distribucache-memory-store)
 
 The cache can be used in various ways, ranging from the simplest get / set, to
 complex scenarious with watermarks for staleness and final expiration.
