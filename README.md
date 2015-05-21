@@ -38,7 +38,7 @@ cache.get('k1', function (err, value) {
   console.log('got value:', value);
 });
 
-cache.set('k1', 'v1' function (err, value) {
+cache.set('k1', 'v1', function (err, value) {
   if (err) throw err;
   console.log('set value:', value);
 });
