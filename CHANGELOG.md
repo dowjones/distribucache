@@ -15,8 +15,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Release the lease regardless of populate errors.
 - Clean up long populate stack traces.
 
-<br />
-
 ## [3.1.0] - 2015-04-24
 ### Added
 - Support `config.timeoutPopulateIn` and increase the lease-expire timeout
@@ -40,8 +38,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Distribucache is now **datastore independent**! There are two backing stores available:
   [Redis](https://github.com/dowjones/distribucache-redis-store) and
   [Memory](https://github.com/dowjones/distribucache-memory-store).
-  
-<br />
 
 ## [2.6.2] - 2015-02-20
 ### Changed
@@ -96,8 +92,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Enforce a `namespace` in the `cacheClient.create` API.
 - Improved README by including the `optimizeForSmallValues` explanation.
 
-<br/>
-
 ## [1.0.0] - 2014-12-02
 ### Added
 - Initial release of a Redis-backed automatically-repopulating cache.
@@ -121,3 +115,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 [2.1.1]: https://github.com/dowjones/distribucache/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/dowjones/distribucache/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/dowjones/distribucache/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/dowjones/distribucache/compare/5bc09c79ac8652c8a07407e803d5ddc74ebe761c...v1.0.0
