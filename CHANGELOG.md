@@ -3,97 +3,97 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
-### Changed
+#### Changed
 - Improved README and package.json metadata
 
 ## [4.0.0] - 2015-05-06
-### Added
+#### Added
 - Major refactoring of the store API for extensibility.
 - Support `config.populateInAttempts` to control the maximum number of attempts.
 
-## Changed
+#### Changed
 - Release the lease regardless of populate errors.
 - Clean up long populate stack traces.
 
 ## [3.1.0] - 2015-04-24
-### Added
+#### Added
 - Support `config.timeoutPopulateIn` and increase the lease-expire timeout
   to `timeoutPopulateIn + 1 sec`.
 
 ## [3.0.3] - 2015-03-23
-### Changed
+#### Changed
 - Refactored timer strategy.
 
 ## [3.0.2] - 2015-03-23
-### Changed
+#### Changed
 - Returned (lost in datastore transition) cache namespace.
 - Marshall undefined value as `null`.
 
 ## [3.0.1] - 2015-03-19
-### Changed
+#### Changed
 - Log possible errors while attempting to delete an expired value.
 
 ## [3.0.0] - 2015-03-18
-### Added
+#### Added
 - Distribucache is now **datastore independent**! There are two backing stores available:
   [Redis](https://github.com/dowjones/distribucache-redis-store) and
   [Memory](https://github.com/dowjones/distribucache-memory-store).
 
 ## [2.6.2] - 2015-02-20
-### Changed
+#### Changed
 - Ensure that the hash is only set after the value is set. Otherwise, it was possible
   for the hash to be update and the value not updated, causing stale values to appear
   for longer than desired.
 
 ## [2.6.1] - 2014-12-18
-### Changed
+#### Changed
 - Proxy Redis errors to the CacheClient.
 
 ## [2.6.0] - 2014-12-12
-### Changed
+#### Changed
 - Log uncaught error to `stderr` instead of throwing. Alternatively you may
   subscribe to the `error` event on the client.
 
 ## [2.5.0] - 2014-12-11
-### Added
+#### Added
 - Support events for the CacheClient: `get`, `set`, `del`, `stale` and `error`.
 
 ## [2.3.1] - 2014-12-04
-### Changed
+#### Changed
 - Fixed Redis connection mode issue.
 
 ## [2.3.0] - 2014-12-04
-### Added
+#### Added
 - Support environments with no "configure" (e.g., Amazon elasticache). This is done
   by attempting to configure, and if that fails `console.warn` a message to the client
   stating that manual configuration is required.
 
 ## [2.2.0] - 2014-12-04
-### Added
+#### Added
 - (Improved performance) The populate method that is called when a value is stale will
   now be run through a time-released lock (lease). This ensures that only one client
   is involved in updating on a stale at any given time, instead of all
   clients attacking the datastore when their values are stale.
 
 ## [2.1.2] - 2014-12-04
-### Changed
+#### Changed
 - Further simplify the marshaller.
 
 ## [2.1.1] - 2014-12-04
-### Changed
+#### Changed
 - Refactoring of the marshaller.
 
 ## [2.1.0] - 2014-12-04
-### Added
+#### Added
 - Added built-in marshalling of values.
 
 ## [2.0.0] - 2014-12-03
-### Changed
+#### Changed
 - Enforce a `namespace` in the `cacheClient.create` API.
 - Improved README by including the `optimizeForSmallValues` explanation.
 
 ## [1.0.0] - 2014-12-02
-### Added
+#### Added
 - Initial release of a Redis-backed automatically-repopulating cache.
 
 
