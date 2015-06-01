@@ -3,12 +3,21 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+
+## [5.0.0] - 2015-06-01
+#### Removed
+- (!) `Cache#set()` no longer returns the provided value.
+
+#### Added
+- Support `config.optimizeForBuffers` to skip marshalling / unmarshalling,
+  as it is redundant when caching buffers.
+
 #### Changed
-- Improved README and package.json metadata
+- Improved README and package.json metadata.
 
 ## [4.0.0] - 2015-05-06
 #### Added
-- Major refactoring of the store API for extensibility.
+- (!) Major refactoring of the store API for extensibility.
 - Support `config.populateInAttempts` to control the maximum number of attempts.
 
 #### Changed
@@ -35,7 +44,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.0.0] - 2015-03-18
 #### Added
-- Distribucache is now **datastore independent**! There are two backing stores available:
+- (!) Distribucache is now **datastore independent**! There are two backing stores available:
   [Redis](https://github.com/dowjones/distribucache-redis-store) and
   [Memory](https://github.com/dowjones/distribucache-memory-store).
 
@@ -89,7 +98,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.0] - 2014-12-03
 #### Changed
-- Enforce a `namespace` in the `cacheClient.create` API.
+- (!) Enforce a `namespace` in the `cacheClient.create` API.
 - Improved README by including the `optimizeForSmallValues` explanation.
 
 ## [1.0.0] - 2014-12-02
@@ -97,7 +106,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Initial release of a Redis-backed automatically-repopulating cache.
 
 
-[unreleased]: https://github.com/dowjones/distribucache/compare/v4.0.0...HEAD
+[unreleased]: https://github.com/dowjones/distribucache/compare/v5.0.0...HEAD
+[5.0.0]: https://github.com/dowjones/distribucache/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/dowjones/distribucache/compare/v3.1.0...v4.0.0
 [3.1.0]: https://github.com/dowjones/distribucache/compare/v3.0.3...v3.1.0
 [3.0.3]: https://github.com/dowjones/distribucache/compare/v3.0.2...v3.0.3

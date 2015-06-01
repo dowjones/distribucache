@@ -1,13 +1,14 @@
 var http = require('http'),
   dcache = require('../lib'),
-  //dstore = require('distribucache-redis-store'),
-  dstore = require('distribucache-memory-store'),
+  dstore = require('distribucache-redis-store'),
+  //dstore = require('distribucache-memory-store'),
   cacheClient = dcache.createClient(dstore()),
   server, cache;
 
 cache = cacheClient.create('page', {
   staleIn: '5 sec',
-  populate: generatePage
+  populate: generatePage,
+  optimizeForBuffers: true
 });
 
 server = http.createServer(function (req, res) {
@@ -27,8 +28,8 @@ function generatePage(pageId, cb) {
   console.log('[page] generating...');
 
   setTimeout(function () {
-    cb(null, '<p>Hello world!</p>');
-  }, 5000);
+    cb(null, new Buffer('<p>Hello world!</p>'));
+  }, 300);
 }
 
 server.listen(2000, function () {

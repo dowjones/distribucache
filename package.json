@@ -1,6 +1,6 @@
 {
   "name": "distribucache",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Store-backed Automatically Populating Cache",
   "keywords": [
     "cache",
@@ -19,7 +19,7 @@
     "test-watch": "mocha -r should --recursive -w -R min -t 20"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^1.0.0",
     "common-errors": "^0.4.17",
     "joi": "^5.0.1",
     "lodash": "^3.5.0",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "distribucache-memory-store": "^3.1.0",
     "distribucache-redis-store": "^3.0.0",
-    "istanbul": "^0.3.2",
+    "istanbul": "^0.3.14",
     "mocha": "^2.0.1",
     "proxyquire": "^1.1.0",
     "should": "^4.3.0",

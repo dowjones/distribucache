@@ -65,6 +65,11 @@ describe('CacheClient', function () {
       c.should.be.type('object');
     });
 
+    it('should create a buffer optimized cache', function () {
+      c = unit.create('n', {optimizeForBuffers: true});
+      c.should.be.type('object');
+    });
+
     it('should use the expire deco on expiresIn', function () {
       c = unit.create('n', {expiresIn: 200});
       c.should.be.type('object');

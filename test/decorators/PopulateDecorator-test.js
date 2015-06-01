@@ -58,8 +58,8 @@ describe('decorators/PopulateDecorator', function () {
 
     it('should proxy through populate if not in cache', function (done) {
       cache.get.yields(null, null);
-      populate.yields(null);
-      cache.set.yields(null, 'pv');
+      populate.yields(null, 'pv');
+      cache.set.yields(null);
       unit.get('k', function (err, val) {
         if (err) return done(err);
         val.should.equal('pv');

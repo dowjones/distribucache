@@ -60,7 +60,7 @@ describe('StoreFacade', function () {
     async.map(simpleMethods, test, done);
   });
 
-  describe('populateInErrorCount', function () { 
+  describe('populateInErrorCount', function () {
     it('should be incremented', function (done) {
       function check(err) {
         store.incrPropBy.calledOnce.should.be.ok;
@@ -130,6 +130,32 @@ describe('StoreFacade', function () {
       store.getProp.yields(null, 33);
       unit.getAccessedAt(null, function (err, val) {
         val.should.equal(33);
+        done(err);
+      });
+    });
+  });
+
+  describe('methods that expect string back', function () {
+    it('should yield an error if the store returns an error', function (done) {
+      store.getProp.yields('e');
+      unit.getHash(null, function (err) {
+        err.should.equal('e');
+        done();
+      });
+    });
+
+    it('should yield a string if the store returns an object', function (done) {
+      store.getProp.yields(null, new Buffer('foo'));
+      unit.getHash(null, function (err, val) {
+        val.should.eql('foo');
+        done(err);
+      });
+    });
+
+    it('should yield a string if the store returns a string', function (done) {
+      store.getProp.yields(null, 'a');
+      unit.getHash(null, function (err, val) {
+        val.should.equal('a');
         done(err);
       });
     });
