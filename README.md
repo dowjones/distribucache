@@ -176,6 +176,32 @@ var cache = cacheClient.create('nsp', {
 ```
 
 
+### Optimization For Caching Buffers
+
+By default the library is configured to store objects. Distribucache marshalls
+the objects to a string (via `JSON.stringify`) and stores it in a datastore.
+When retrieving an object from a store distribucache will unmarshall the string
+(via `JSON.parse`) and return the object to the client. This works well for objects,
+but is not optimal for storing `Buffer`s, as said marshalling has memory and CPU overhead.
+To minimize that overhead distribucache has an `optimizeForBuffers` configuration option.
+
+With the `distribucache-redis-store` for example, the full path an object takes may be:
+`Buffer (Redis) -> String (Redis) -> Object (Distribucache) -> String (App) -> Buffer (Http)`
+
+When `optimizeForBuffers: true` is enabled, on the other hand, the path will be:
+`Buffer (Redis) ->  [same] Buffer (Distribucache) -> [same] Buffer (App) -> [same] Buffer (Http)`,
+thereby avoiding taking up the extra memory by the `String` / `Object` representations
+and also avoiding the CPU overhead of converting and garbage-collecting.
+
+```javascript
+var cache = cacheClient.create('nsp', {
+  optimizeForBuffers: true
+});
+```
+
+Once set, `cache.get()` will return a `Buffer` as the value.
+
+
 ### API
 
 #### Distribucache
