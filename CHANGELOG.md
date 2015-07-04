@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 
+## [5.1.0] - 2015-07-04
+#### Added
+- Namespace in unhandled error messages.
+
 ## [5.0.0] - 2015-06-01
 #### Removed
 - (!) `Cache#set()` no longer returns the provided value.
