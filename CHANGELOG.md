@@ -110,7 +110,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Initial release of a Redis-backed automatically-repopulating cache.
 
 
-[unreleased]: https://github.com/dowjones/distribucache/compare/v5.0.0...HEAD
+[unreleased]: https://github.com/dowjones/distribucache/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/dowjones/distribucache/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/dowjones/distribucache/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/dowjones/distribucache/compare/v3.1.0...v4.0.0
 [3.1.0]: https://github.com/dowjones/distribucache/compare/v3.0.3...v3.1.0
