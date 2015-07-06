@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+#### Added
+- ESLint validation on `npm test`. Also runs via `npm run lint`.
 
 ## [5.1.0] - 2015-07-04
 #### Added
