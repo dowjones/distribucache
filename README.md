@@ -10,7 +10,7 @@ There are multiple available **datastores**, including:
   - [Memory](https://github.com/dowjones/distribucache-memory-store)
 
 The cache can be used in various ways, ranging from the simplest get / set, to
-complex scenarious with watermarks for staleness and final expiration.
+complex scenarios with watermarks for staleness and final expiration.
 
 
 ## Usage
@@ -243,7 +243,7 @@ also available to the `CacheClient#create`:
 The `CacheClient` events are propagated from the `Cache`s created by the client.
 You can disable event-propagation by setting `config.stopEventPropagation` to `true`.
 
-The following events are emmitted *before* the actual call is completed:
+The following events are emitted *before* the actual call is completed:
 
   - `get` - `(key, namespace)`
   - `set` - `(key, value, namespace)`
@@ -252,23 +252,35 @@ The following events are emmitted *before* the actual call is completed:
   - `error` - `(error, namespace)`
 
 *Note:* `error` is emitted by various feature decorators. It is a good idea to listen
-to this event, as otherwise the the error will be logged to `stderr`.
+to this event, as otherwise the error will be logged to `stderr`.
 
 
 ### Cache-emitted Events
 
-The following events are emmitted *before* the call is completed:
+The following events are emitted *before* the call is completed:
 
   - `get` - `(key)`
   - `set` - `(key, value)`
   - `del` -  `(key)`
   - `stale` - `(key)` - emitted on a get, when the value is in the cache but is stale. This happens only when the `staleIn` is set.
 
+The events below are there for stats collection:
+
+  - `expire` - `(key)`
+  - `hit` - `(key)`
+  - `miss` - `(key)`
+
+  - `setIdentical` - when a `set()` does not modify the datastore due to the value being identical
+  - `populateIn` - populate triggered by `populateIn`
+  - `populateInError`
+  - `populateInMaxAttempts`
+  - `populateInPause`
+
 
 ### Human-readable Time Intervals
 
 The time intervals in this library can be provided as a `number`
-in milliseconds **or** as a human-readible time interval.
+in milliseconds **or** as a human-readable time interval.
 
 Below are a few  examples:
 
