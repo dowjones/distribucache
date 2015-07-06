@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 var distribucache = require('../lib'),
   //memoryStore = require('distribucache-memory-store'),
   //store = memoryStore(),

@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 var http = require('http'),
   dcache = require('../lib'),
   dstore = require('distribucache-redis-store'),
