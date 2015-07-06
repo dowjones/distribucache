@@ -1,9 +1,8 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  stub = require('sinon').stub,
-  joi = require('joi');
+  stub = require('sinon').stub;
 
 describe('decorators/PopulateInDecorator', function () {
-  var PopulateInDecorator, unit, cache, noop, store, timer;
+  var PopulateInDecorator, unit, cache, store, timer;
 
   beforeEach(function () {
     var modulePath;
@@ -49,13 +48,13 @@ describe('decorators/PopulateInDecorator', function () {
   it('should set accessedAt', function () {
     store.setAccessedAt.yields(null);
     unit.setAccessedAt('k');
-    store.setAccessedAt.calledOnce.should.be.ok;
+    store.setAccessedAt.calledOnce.should.be.ok();
   });
 
   it('should set a trigger', function () {
     timer.setTimeout.yields(null);
     unit.setTimeout('k');
-    timer.setTimeout.calledOnce.should.be.ok;
+    timer.setTimeout.calledOnce.should.be.ok();
   });
 
   it('should call leasedPopulate on `timeout`', function (done) {
@@ -91,7 +90,7 @@ describe('decorators/PopulateInDecorator', function () {
     it('should continue to populate despite an error if within attempts', function (done) {
       function check(err) {
         err.message.should.equal('bad');
-        timer.setTimeout.calledOnce.should.be.ok;
+        timer.setTimeout.calledOnce.should.be.ok();
         done();
       }
       store.getAccessedAt.yields(null, Infinity);
@@ -103,7 +102,7 @@ describe('decorators/PopulateInDecorator', function () {
     it('should not continue to populate despite an error over attempts', function (done) {
       function check(err) {
         err.message.should.equal('bad');
-        timer.setTimeout.called.should.not.be.ok;
+        timer.setTimeout.called.should.not.be.ok();
         done();
       }
       store.getAccessedAt.yields(null, Infinity);
@@ -115,7 +114,7 @@ describe('decorators/PopulateInDecorator', function () {
     it('should continue to populate despite an error', function (done) {
       function check(err) {
         err.message.should.equal('bad');
-        timer.setTimeout.calledOnce.should.be.ok;
+        timer.setTimeout.calledOnce.should.be.ok();
         done();
       }
       store.getAccessedAt.yields(null, Infinity);
@@ -127,7 +126,7 @@ describe('decorators/PopulateInDecorator', function () {
     it('should propagate an incremement error', function (done) {
       function check(err) {
         err.message.should.equal('inc');
-        timer.setTimeout.called.should.not.be.ok;
+        timer.setTimeout.called.should.not.be.ok();
         done();
       }
       store.getAccessedAt.yields(null, Infinity);

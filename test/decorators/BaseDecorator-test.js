@@ -1,9 +1,11 @@
+/* eslint no-new: 0 */
+
 var BaseDecorator = require('../_all').decorators.BaseDecorator,
   stub = require('sinon').stub,
   joi = require('joi');
 
 describe('decorators/BaseDecorator', function () {
-  var cache, noop;
+  var cache;
 
   beforeEach(function () {
     function noop() {}
@@ -18,13 +20,13 @@ describe('decorators/BaseDecorator', function () {
     it('should emit an error on error or do nothing', function () {
       var d = new BaseDecorator(cache);
       d._emitError(new Error('bad'));
-      cache.emit.calledOnce.should.be.ok;
+      cache.emit.calledOnce.should.be.ok();
     });
 
     it('should not emit an error when none is sent', function () {
       var d = new BaseDecorator(cache);
       d._emitError(null);
-      cache.emit.calledOnce.should.not.be.ok;
+      cache.emit.calledOnce.should.not.be.ok();
     });
   });
 

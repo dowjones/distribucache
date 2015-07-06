@@ -20,7 +20,7 @@ strCache = cacheClient.create('str:v1', {
   populateIn: '3 sec',
   pausePopulateIn: '1 min',
   populate: function (key, cb) {
-    var alphanum =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+    var alphanum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
       word = '';
     for (var i = 0; i < 5; i++) {
       word += alphanum.charAt(Math.floor(
@@ -34,13 +34,13 @@ strCache = cacheClient.create('str:v1', {
 function main() {
   numCache.get('k', function (err, v) {
     if (err) return console.error('[client]', err);
-    if ('number' !== typeof v) throw new Error('not number');
+    if (typeof v !== 'number') throw new Error('not number');
     console.log('[client]', v);
   });
 
   strCache.get('k', function (err, v) {
     if (err) return console.error('[client]', err);
-    if ('string' !== typeof v) throw new Error('not string');
+    if (typeof v !== 'string') throw new Error('not string');
     console.log('[client]', v);
   });
 }

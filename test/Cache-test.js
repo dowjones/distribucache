@@ -21,7 +21,7 @@ describe('Cache', function () {
       unit.on('get', getSpy);
 
       function check() {
-        getSpy.calledOnce.should.be.ok;
+        getSpy.calledOnce.should.be.ok();
         done();
       }
 
@@ -45,7 +45,7 @@ describe('Cache', function () {
       unit.on('set', setSpy);
 
       function check() {
-        setSpy.calledOnce.should.be.ok;
+        setSpy.calledOnce.should.be.ok();
         done();
       }
 
@@ -60,7 +60,7 @@ describe('Cache', function () {
       unit.on('del', delSpy);
 
       function check() {
-        delSpy.calledOnce.should.be.ok;
+        delSpy.calledOnce.should.be.ok();
         done();
       }
 

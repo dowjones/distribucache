@@ -31,7 +31,7 @@ describe('StoreFacade', function () {
 
   it('should use _toStoreKey for simple methods', function (done) {
     var simpleMethods = Object.keys(StoreFacade.prototype).filter(function (name) {
-      return (name !== 'createLease' && name !== 'createTimer'  &&
+      return (name !== 'createLease' && name !== 'createTimer' &&
         name !== 'on' && name[0] !== '_' && name !== 'resetPopulateInErrorCount' &&
         name !== 'incrementPopulateInErrorCount');
     });
@@ -45,7 +45,7 @@ describe('StoreFacade', function () {
 
       function check(err) {
         if (err) return cb(err);
-        unit._toStoreKey.calledOnce.should.be.ok;
+        unit._toStoreKey.calledOnce.should.be.ok();
         unit._toStoreKey.reset();
         cb();
       }
@@ -63,7 +63,7 @@ describe('StoreFacade', function () {
   describe('populateInErrorCount', function () {
     it('should be incremented', function (done) {
       function check(err) {
-        store.incrPropBy.calledOnce.should.be.ok;
+        store.incrPropBy.calledOnce.should.be.ok();
         done(err);
       }
       store.incrPropBy.yields(null);
@@ -72,7 +72,7 @@ describe('StoreFacade', function () {
 
     it('should be deleted when reset', function (done) {
       function check(err) {
-        store.delProp.calledOnce.should.be.ok;
+        store.delProp.calledOnce.should.be.ok();
         done(err);
       }
       store.delProp.yields(null);
@@ -89,7 +89,7 @@ describe('StoreFacade', function () {
 
     namespacedLease = unit.createLease();
     namespacedLease('k', function () {
-      unit._toStoreKey.calledOnce.should.be.ok;
+      unit._toStoreKey.calledOnce.should.be.ok();
       unit._toStoreKey.reset();
       done();
     });
@@ -105,7 +105,7 @@ describe('StoreFacade', function () {
 
   it('should proxy createTimer', function () {
     unit.createTimer();
-    store.createTimer.calledOnce;
+    store.createTimer.calledOnce.should.be.ok();
     store.createTimer.lastCall.args[0].should.equal('n');
   });
 

@@ -4,10 +4,9 @@ var proxyquire = require('proxyquire').noCallThru(),
   spy = sinon.spy;
 
 describe('CacheClient', function () {
-  var noop, store, CacheClient, util, unit, deco, c;
+  var store, CacheClient, util, unit, deco, c;
 
   beforeEach(function () {
-    var redis;
     function noop() {}
 
     function Cache() {}
@@ -46,7 +45,7 @@ describe('CacheClient', function () {
 
   it('should create a preconfigured client', function () {
     unit = new CacheClient(store, {isPreconfigured: true});
-    util.ensureKeyspaceNotifications.called.should.not.be.ok;
+    util.ensureKeyspaceNotifications.called.should.not.be.ok();
   });
 
   describe('create', function () {
@@ -57,7 +56,7 @@ describe('CacheClient', function () {
     it('should create default cache', function () {
       c = unit.create('n');
       c.should.be.type('object');
-      deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
+      deco.OnlySetChangedDecorator.calledOnce.should.be.ok();
     });
 
     it('should create a small-value optimized cache', function () {
@@ -74,52 +73,52 @@ describe('CacheClient', function () {
       c = unit.create('n', {expiresIn: 200});
       c.should.be.type('object');
 
-      deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.ExpiresDecorator.calledOnce.should.be.ok;
+      deco.OnlySetChangedDecorator.calledOnce.should.be.ok();
+      deco.ExpiresDecorator.calledOnce.should.be.ok();
     });
 
     it('should use the expire deco on staleIn', function () {
       c = unit.create('n', {staleIn: 200});
       c.should.be.type('object');
 
-      deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.ExpiresDecorator.calledOnce.should.be.ok;
+      deco.OnlySetChangedDecorator.calledOnce.should.be.ok();
+      deco.ExpiresDecorator.calledOnce.should.be.ok();
     });
 
     it('should use the populate deco on populate', function () {
       c = unit.create('n', {populate: function () {}});
       c.should.be.type('object');
 
-      deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.PopulateDecorator.calledOnce.should.be.ok;
+      deco.OnlySetChangedDecorator.calledOnce.should.be.ok();
+      deco.PopulateDecorator.calledOnce.should.be.ok();
     });
 
     it('should use the populateIn deco on populateIn & populate', function () {
       c = unit.create('n', {populateIn: 200, populate: function () {}});
       c.should.be.type('object');
 
-      deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.PopulateDecorator.calledOnce.should.be.ok;
-      deco.PopulateInDecorator.calledOnce.should.be.ok;
+      deco.OnlySetChangedDecorator.calledOnce.should.be.ok();
+      deco.PopulateDecorator.calledOnce.should.be.ok();
+      deco.PopulateInDecorator.calledOnce.should.be.ok();
     });
 
     it('should not use populateIn without populate', function () {
       c = unit.create('n', {populateIn: 200});
       c.should.be.type('object');
 
-      deco.OnlySetChangedDecorator.calledOnce.should.be.ok;
-      deco.PopulateInDecorator.calledOnce.should.not.be.ok;
+      deco.OnlySetChangedDecorator.calledOnce.should.be.ok();
+      deco.PopulateInDecorator.calledOnce.should.not.be.ok();
     });
 
     describe('error event propagation', function () {
       it('should retransmit error events by default', function () {
         c = unit.create('n');
-        util.propagateEvents.calledOnce.should.be.ok;
+        util.propagateEvents.calledOnce.should.be.ok();
       });
 
       it('should stop error event propagation if desired', function () {
         c = unit.create('n', {stopEventPropagation: true});
-        util.propagateEvents.calledOnce.should.not.be.ok;
+        util.propagateEvents.calledOnce.should.not.be.ok();
       });
     });
   });

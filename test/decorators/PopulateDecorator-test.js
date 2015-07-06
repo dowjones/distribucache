@@ -1,10 +1,9 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  stub = require('sinon').stub,
-  joi = require('joi');
+  stub = require('sinon').stub;
 
 describe('decorators/PopulateDecorator', function () {
   var PopulateDecorator, unit, cache,
-    noop, store, lease, populate;
+    store, lease, populate;
 
   beforeEach(function () {
     var modulePath;
@@ -51,6 +50,7 @@ describe('decorators/PopulateDecorator', function () {
     it('should return a cached value if in cache', function (done) {
       cache.get.yields(null, 'v');
       unit.get('k', function (err, val) {
+        if (err) return done(err);
         val.should.equal('v');
         done();
       });
@@ -92,7 +92,7 @@ describe('decorators/PopulateDecorator', function () {
       function check(err, val) {
         if (err) return done(err);
         val.should.equal('v');
-        unlock.calledOnce.should.be.ok;
+        unlock.calledOnce.should.be.ok();
         done();
       }
       lease.yields(null, unlock);
@@ -118,10 +118,10 @@ describe('decorators/PopulateDecorator', function () {
 
     it('should proxy populate error and unlock', function (done) {
       var unlock = stub();
-      function check(err, val) {
+      function check(err) {
         err.name.should.equal('PopulateError');
         err.message.should.match(/failed to populate/);
-        unlock.calledOnce.should.be.ok;
+        unlock.calledOnce.should.be.ok();
         done();
       }
       lease.yields(null, unlock);

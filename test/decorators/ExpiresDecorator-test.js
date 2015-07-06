@@ -1,9 +1,8 @@
 var ExpiresDecorator = require('../_all').decorators.ExpiresDecorator,
-  stub = require('sinon').stub,
-  joi = require('joi');
+  stub = require('sinon').stub;
 
 describe('decorators/ExpiresDecorator', function () {
-  var unit, cache, noop, store;
+  var unit, cache, store;
 
   beforeEach(function () {
     function noop() {}
@@ -26,7 +25,7 @@ describe('decorators/ExpiresDecorator', function () {
     it('should set the createdAt timestamp', function () {
       store.setCreatedAt.yields(null);
       unit.setCreatedAt('k');
-      store.setCreatedAt.calledOnce.should.be.ok;
+      store.setCreatedAt.calledOnce.should.be.ok();
     });
   });
 
@@ -46,7 +45,7 @@ describe('decorators/ExpiresDecorator', function () {
       store.getCreatedAt.yields(null, '0');
       unit = new ExpiresDecorator(cache, {expiresIn: 0});
       unit.get('k', function () {
-        cache.del.called.should.be.ok;
+        cache.del.called.should.be.ok();
         done();
       });
     });
@@ -56,7 +55,7 @@ describe('decorators/ExpiresDecorator', function () {
       cache.get.yields(null);
       unit = new ExpiresDecorator(cache, {staleIn: 0});
       unit.get('k', function () {
-        cache.emit.calledOnce.should.be.ok;
+        cache.emit.calledOnce.should.be.ok();
         cache.emit.firstCall.args[0].should.equal('stale');
         done();
       });

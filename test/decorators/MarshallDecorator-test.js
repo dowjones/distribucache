@@ -14,6 +14,7 @@ describe('decorators/MarshallDecorator', function () {
   describe('get', function () {
     it('should get unmarshalled data', function (done) {
       function check(err, value) {
+        if (err) return done(err);
         value.should.eql({a: 42, b: true});
         done();
       }
@@ -54,6 +55,7 @@ describe('decorators/MarshallDecorator', function () {
   describe('set', function () {
     it('should marshall an object to a string before setting', function (done) {
       function check(err) {
+        if (err) return done(err);
         cache.set.lastCall.args[1]
           .should.equal('{"a":42,"b":true}');
         done();
@@ -64,6 +66,7 @@ describe('decorators/MarshallDecorator', function () {
 
     it('should marshall `undefined` as `null`', function (done) {
       function check(err) {
+        if (err) return done(err);
         cache.set.lastCall.args[1].should.equal('null');
         done();
       }

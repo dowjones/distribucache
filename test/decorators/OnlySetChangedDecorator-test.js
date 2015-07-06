@@ -1,11 +1,10 @@
 var all = require('../_all'),
   util = all.util,
   OnlySetChangedDecorator = all.decorators.OnlySetChangedDecorator,
-  stub = require('sinon').stub,
-  joi = require('joi');
+  stub = require('sinon').stub;
 
 describe('decorators/OnlySetChangedDecorator', function () {
-  var unit, cache, noop, store;
+  var unit, cache, store;
 
   beforeEach(function () {
     function noop() {}
@@ -31,7 +30,7 @@ describe('decorators/OnlySetChangedDecorator', function () {
       cache.set.yields(null);
       unit.set('k', 'v', function () {
         process.nextTick(function () {
-          store.getHash.calledOnce.should.be.ok;
+          store.getHash.calledOnce.should.be.ok();
           done();
         });
       });
@@ -53,7 +52,7 @@ describe('decorators/OnlySetChangedDecorator', function () {
       cache.set.yields(new Error('bad'));
       unit.set('k', 'v', function () {
         process.nextTick(function () {
-          store.setHash.calledOnce.should.not.be.ok;
+          store.setHash.calledOnce.should.not.be.ok();
           done();
         });
       });
