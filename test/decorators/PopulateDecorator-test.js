@@ -37,13 +37,13 @@ describe('decorators/PopulateDecorator', function () {
   });
 
   it('should call leasedPopulate on stale event', function (done) {
-     var onStaleEvent = cache.on.lastCall.args[1];
-     unit.leasedPopulate = function (k, cb) {
-       k.should.equal('a');
-       cb.should.be.type('function');
-       done();
-     };
-     onStaleEvent('a');
+    var onStaleEvent = cache.on.lastCall.args[1];
+    unit.leasedPopulate = function (k, cb) {
+      k.should.equal('a');
+      cb.should.be.type('function');
+      done();
+    };
+    onStaleEvent('a');
   });
 
   describe('get', function () {

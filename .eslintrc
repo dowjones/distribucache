@@ -4,6 +4,7 @@
     "mocha": true
   },
   "rules": {
+    "indent": [2, 2],
     "strict": [2, "never"],
     "curly": [2, "multi-line"],
     "quotes": [2, "single"],

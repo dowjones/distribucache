@@ -14,7 +14,8 @@
   "author": "nemtsov@gmail.com",
   "main": "./lib",
   "scripts": {
-    "test": "sh -c 'eslint examples/ lib/ test/ && npm run test-cover && istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100'",
+    "test": "sh -c 'npm run lint && npm run test-cover && istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100'",
+    "lint": "eslint examples/ lib/ test/",
     "test-cover": "istanbul cover _mocha -- -r should --recursive",
     "test-watch": "mocha -r should --recursive -w -R min -t 20"
   },

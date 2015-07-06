@@ -58,13 +58,13 @@ describe('decorators/PopulateInDecorator', function () {
   });
 
   it('should call leasedPopulate on `timeout`', function (done) {
-     var _onTimeout = timer.on.lastCall.args[1];
-     unit.leasedPopulate = function (k, cb) {
-       k.should.equal('k');
-       cb.should.be.type('function');
-       done();
-     };
-     _onTimeout('k');
+    var _onTimeout = timer.on.lastCall.args[1];
+    unit.leasedPopulate = function (k, cb) {
+      k.should.equal('k');
+      cb.should.be.type('function');
+      done();
+    };
+    _onTimeout('k');
   });
 
   describe('leasedPopulate', function () {
