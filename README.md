@@ -242,32 +242,32 @@ also available to the `CacheClient#create`:
 
 | Name | Arguments | Emitted | Followed by |
 |------|-----------|-------------|-------------|
-| `get:before` | (key)| before the datastore is called to get a value | none |
-| `get:stale` | (key) | when an element exceeds its `staleIn` time | `populate` |
-| `get:expire` | (key) | when an element exceeds its `expireIn` time | `del` |
-| `get:hit` | (key) | when an element exceeds its `expireIn` time  | none |
-| `get:miss` | (key) | when an element is not in the cache | `populate` |
-| `get:after` | (key, elapsedTimeInMs) | after the datastore returns a value or an error | none |
-| `get:error` | (key) | when a datastore returns an error | none |
+| `get:before` | `key` | before the datastore is called to get a value | none |
+| `get:stale` | `key` | when an element exceeds its `staleIn` time | `populate` |
+| `get:expire` | `key` | when an element exceeds its `expireIn` time | `del` |
+| `get:hit` | `key` | when an element exceeds its `expireIn` time  | none |
+| `get:miss` | `key` | when an element is not in the cache | `populate` |
+| `get:after` | `key, elapsedTimeInMs` | after the datastore returns a value or an error | none |
+| `get:error` | `key` | when a datastore returns an error | none |
 | | | | |
-| `set:before` | (key, value) |  | none |
-| `set:identical` | (key, value) |  | none |
-| `set:after` | (key, value, elapsedTimeInMs) |  | none |
-| `set:error` | (key, value) |  | none |
+| `set:before` | `key, value` |  | none |
+| `set:identical` | `key, value` |  | none |
+| `set:after` | `key, value, elapsedTimeInMs` |  | none |
+| `set:error` | `key, value` |  | none |
 | | | | |
-| `del:before` | (key) |  | none |
-| `del:after` | (key, elapsedTimeInMs) |  | none |
-| `del:error` | (key) |  | none |
+| `del:before` | `key` |  | none |
+| `del:after` | `key, elapsedTimeInMs` |  | none |
+| `del:error` | `key` |  | none |
 | | | | |
-| `populate:before` | (key) |  | none |
-| `populate:after` | (key, elapsedTimeInMs) |  | none |
-| `populate:error` | (key) |  | none |
+| `populate:before` | `key` |  | none |
+| `populate:after` | `key, elapsedTimeInMs` |  | none |
+| `populate:error` | `key` |  | none |
 | | | | |
-| `populateIn:before` | (key) |  | `populate` |
-| `populateIn:pause` | (key) |  | none |
-| `populateIn:maxAttempts` | (key) |  | none |
-| `populateIn:after` | (key, elapsedTimeInMs) |  | none |
-| `populateIn:error` | (key) |  | none |
+| `populateIn:before` | `key` |  | `populate` |
+| `populateIn:pause` | `key` |  | none |
+| `populateIn:maxAttempts` | `key` |  | none |
+| `populateIn:after` | `key, elapsedTimeInMs` |  | none |
+| `populateIn:error` | `key` |  | none |
 
 
 
