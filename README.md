@@ -240,41 +240,35 @@ also available to the `CacheClient#create`:
 
 ### CacheClient-emitted Events
 
-The `CacheClient` events are propagated from the `Cache`s created by the client.
-You can disable event-propagation by setting `config.stopEventPropagation` to `true`.
+| Name | Arguments | Description | Triggers |
+|------|-----------|-------------|----------|
+| `get:before` | `(key)`| Emitted before the datastore is called to get a value. | none |
+| `get:stale` | `(key)`| Emitted when an element exceeds its `staleIn` time. | `populate` |
+| `get:expire` | `(key)`| Emitted when an element exceeds its `expireIn` time. | `del` |
+| `get:hit` | `(key)`| Emitted when an element exceeds its `expireIn` time.  | none |
+| `get:miss` | `(key)`| Emitted when an element is not in the cache. | `populate` |
+| `get:after` | `(key, elapsedTimeInMs)`| Emitted after the datastore returns a value or an error. | none |
+| `get:error` | `(key)`| Emitted when a datastore returns an error. | none |
+| | | | |
+| `set:before` | `(key, value)`|  | none |
+| `set:identical` | `(key, value)`|  | none |
+| `set:after` | `(key, value, elapsedTimeInMs)`|  | none |
+| `set:error` | `(key, value)`|  | none |
+| | | | |
+| `del:before` | `(key)`|  | none |
+| `del:after` | `(key, elapsedTimeInMs)`|  | none |
+| `del:error` | `(key)`|  | none |
+| | | | |
+| `populate:before` | `(key)`|  | none |
+| `populate:after` | `(key, elapsedTimeInMs)`|  | none |
+| `populate:error` | `(key)`|  | none |
+| | | | |
+| `populateIn:before` | `(key)`|  | `populate` |
+| `populateIn:pause` | `(key)`|  | none |
+| `populateIn:maxAttempts` | `(key)`|  | none |
+| `populateIn:after` | `(key, elapsedTimeInMs)`|  | none |
+| `populateIn:error` | `(key)`|  | none |
 
-The following events are emitted *before* the actual call is completed:
-
-  - `get` - `(key, namespace)`
-  - `set` - `(key, value, namespace)`
-  - `del` -  `(key, namespace)`
-  - `stale` - `(key, namespace)`
-  - `error` - `(error, namespace)`
-
-*Note:* `error` is emitted by various feature decorators. It is a good idea to listen
-to this event, as otherwise the error will be logged to `stderr`.
-
-
-### Cache-emitted Events
-
-The following events are emitted *before* the call is completed:
-
-  - `get` - `(key)`
-  - `set` - `(key, value)`
-  - `del` -  `(key)`
-  - `stale` - `(key)` - emitted on a get, when the value is in the cache but is stale. This happens only when the `staleIn` is set.
-
-The events below are there for stats collection:
-
-  - `expire` - `(key)`
-  - `hit` - `(key)`
-  - `miss` - `(key)`
-
-  - `setIdentical` - when a `set()` does not modify the datastore due to the value being identical
-  - `populateIn` - populate triggered by `populateIn`
-  - `populateInError`
-  - `populateInMaxAttempts`
-  - `populateInPause`
 
 
 ### Human-readable Time Intervals
