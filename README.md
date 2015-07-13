@@ -251,28 +251,27 @@ Name | Arguments | Emitted | Followed by
 `get:error` | `key` | when a datastore returns an error | none
 | | | |
 | | | |
-`set:before` | `key, value` |  | none
-`set:identical` | `key, value` |  | none
-`set:after` | `key, value, elapsedTimeInMs` |  | none
-`set:error` | `key, value` |  | none
+`set:before` | `key, value` | before the datastore is called to set a value | none
+`set:identical` | `key, value` | when a value that is being set is identical to the one in the datastore. | none
+`set:after` | `key, value, elapsedTimeInMs` | after the datastore is done setting a value | none
+`set:error` | `key, value` | when a datastore returns an error | none
 | | | |
 | | | |
-`del:before` | `key` |  | none
-`del:after` | `key, elapsedTimeInMs` |  | none
-`del:error` | `key` |  | none
+`del:before` | `key` | before the datastore is called to delete a value | none
+`del:after` | `key, elapsedTimeInMs` | after the datastore is done deleting an element | none
+`del:error` | `key` | when a datastore returns an error | none
 | | | |
 | | | |
-`populate:before` | `key` |  | none
-`populate:after` | `key, elapsedTimeInMs` |  | none
-`populate:error` | `key` |  | none
+`populate:before` | `key` | before distribucache attempts to populate a value | none
+`populate:after` | `key, elapsedTimeInMs` | after distribucahce populates a value or returns an error | none
+`populate:error` | `key` | when a datastore returns an error | none
 | | | |
 | | | |
-`populateIn:before` | `key` |  | `populate`
-`populateIn:pause` | `key` |  | none
-`populateIn:maxAttempts` | `key` |  | none
-`populateIn:after` | `key, elapsedTimeInMs` |  | none
-`populateIn:error` | `key` |  | none
-
+`populateIn:before` | `key` | before distribucache attempts to populate a value (on the `populateIn` interval) | `populate`
+`populateIn:pause` | `key` | when the cache hasn't been re-populated within the `pausePopulateIn` time | none
+`populateIn:maxAttempts` | `key` | when the cache reached the maximum number of attempts to populate (as configured by `populateInAttempts`) | none
+`populateIn:after` | `key, elapsedTimeInMs` | after distribucache is done setting a value or returns an error | none
+`populateIn:error` | `key` | when a datastore returns an error  | none
 
 
 ### Human-readable Time Intervals
