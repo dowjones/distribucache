@@ -262,7 +262,7 @@ Name | Arguments | Emitted | Followed by
 `del:error` | `err, key` | when a datastore returns an error | none
 | | | |
 | | | |
-`populate:before` | `key` | before distribucache attempts to populate a value | none
+`populate:before` | `key` | before distribucache attempts to populate a value | `set`
 `populate:after` | `key, elapsedTimeInMs` | after distribucahce populates a value or returns an error | none
 `populate:error` | `err, key` | when a datastore returns an error | none
 | | | |
