@@ -1,5 +1,7 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  stub = require('sinon').stub;
+  should = require('should'),
+  sinon = require('sinon'),
+  stub = sinon.stub;
 
 describe('util', function () {
   var noop, util, redis;
@@ -105,6 +107,61 @@ describe('util', function () {
       source.on.yields('ooo');
       util.propagateEvents(source, dest, ['nom'], 'sn');
       dest.emit.firstCall.args.should.eql(['nom', 'ooo', 'sn']);
+    });
+  });
+
+  describe('eventWrap', function () {
+    var clock;
+
+    beforeEach(function () {
+      clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function () {
+      clock.restore();
+    });
+
+    it('should wrap with before / after events', function(done) {
+      var ev = {emit: stub()}, wRun;
+
+      function takeTime(cb) {
+        process.nextTick(function () {
+          clock.tick(500);
+          cb(null, 'u');
+        });
+      }
+
+      function run(err, val) {
+        if (err) return done(err);
+        val.should.equal('u');
+        ev.emit.callCount.should.equal(2);
+        ev.emit.firstCall.args.should.eql(['g:before', 'arg1', 'arg2']);
+        ev.emit.secondCall.args.should.eql(['g:after', 'arg1', 'arg2', 500]);
+        done();
+      }
+
+      wRun = util.eventWrap(ev, 'g', ['arg1', 'arg2'], run);
+      takeTime(wRun);
+    });
+
+    it('should emit an error event on error', function(done) {
+      var ev = {emit: stub()}, wRun;
+
+      function takeTime(cb) {
+        cb(new Error('b'));
+      }
+
+      function run(err) {
+        should(err).be.ok();
+        ev.emit.callCount.should.equal(3);
+        ev.emit.firstCall.args.should.eql(['g:before', 'arg1']);
+        ev.emit.secondCall.args.should.eql(['g:error', new Error('b'), 'arg1']);
+        ev.emit.thirdCall.args.should.eql(['g:after', 'arg1', 0]);
+        done();
+      }
+
+      wRun = util.eventWrap(ev, 'g', ['arg1'], run);
+      takeTime(wRun);
     });
   });
 });

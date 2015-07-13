@@ -36,12 +36,12 @@ describe('decorators/OnlySetChangedDecorator', function () {
       });
     });
 
-    it('should not call set but emit set when hash matches (same val)', function (done) {
+    it('should not call set but emit set:identical when hash matches (same val)', function (done) {
       store.getHash.yields(null, util.createHash('v'));
       cache.set.yields(null);
       unit.set('k', 'v', function () {
         process.nextTick(function () {
-          cache.emit.firstCall.args[0].should.equal('set');
+          cache.emit.firstCall.args[0].should.equal('set:identical');
           done();
         });
       });

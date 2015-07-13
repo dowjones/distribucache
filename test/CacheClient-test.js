@@ -27,6 +27,7 @@ describe('CacheClient', function () {
     deco = {};
     deco.OnlySetChangedDecorator = spy(Cache);
     deco.MarshallDecorator = spy(Cache);
+    deco.EventDecorator = spy(Cache);
     deco.ExpiresDecorator = spy(Cache);
     deco.PopulateDecorator = spy(Cache);
     deco.PopulateInDecorator = spy(Cache);
