@@ -240,8 +240,6 @@ also available to the `CacheClient#create`:
 
 ### CacheClient-emitted Events
 
-#### Get
-
 Name | Arguments | Emitted | Followed by
 -----|-----------|---------|-------------
 `get:before` | `key`| before the datastore is called to get a value | none
@@ -251,36 +249,24 @@ Name | Arguments | Emitted | Followed by
 `get:miss` | `key` | when an element is not in the cache | `populate`
 `get:after` | `key, elapsedTimeInMs` | after the datastore returns a value or an error | none
 `get:error` | `key` | when a datastore returns an error | none
-
-#### Set
-
-Name | Arguments | Emitted | Followed by
------|-----------|---------|-------------
+| | | |
+| | | |
 `set:before` | `key, value` | before the datastore is called to set a value | none
 `set:identical` | `key, value` | when a value that is being set is identical to the one in the datastore. | none
 `set:after` | `key, value, elapsedTimeInMs` | after the datastore is done setting a value | none
 `set:error` | `key, value` | when a datastore returns an error | none
-
-#### Del
-
-Name | Arguments | Emitted | Followed by
------|-----------|---------|-------------
+| | | |
+| | | |
 `del:before` | `key` | before the datastore is called to delete a value | none
 `del:after` | `key, elapsedTimeInMs` | after the datastore is done deleting an element | none
 `del:error` | `key` | when a datastore returns an error | none
-
-#### Populate
-
-Name | Arguments | Emitted | Followed by
------|-----------|---------|-------------
+| | | |
+| | | |
 `populate:before` | `key` | before distribucache attempts to populate a value | none
 `populate:after` | `key, elapsedTimeInMs` | after distribucahce populates a value or returns an error | none
 `populate:error` | `key` | when a datastore returns an error | none
-
-#### PopulateIn
-
-Name | Arguments | Emitted | Followed by
------|-----------|---------|-------------
+| | | |
+| | | |
 `populateIn:before` | `key` | before distribucache attempts to populate a value (on the `populateIn` interval) | `populate`
 `populateIn:pause` | `key` | when the cache hasn't been re-populated within the `pausePopulateIn` time | none
 `populateIn:maxAttempts` | `key` | when the cache reached the maximum number of attempts to populate (as configured by `populateInAttempts`) | none
