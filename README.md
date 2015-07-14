@@ -240,6 +240,20 @@ also available to the `CacheClient#create`:
 
 ### CacheClient-emitted Events
 
+The `CacheClient` `error` event is propagated from the `Cache`s created by the client.
+You can disable event-propagation by setting `config.stopEventPropagation` to `true`.
+
+Name | Arguments | Emitted
+-----|-----------|--------
+`create` | `cache, namespace` | when the `CacheClient#create` method is called
+`error` | `err, namespace` | on (propagated) errors
+
+
+### Cache-emitted Events
+
+The events below are emitted by the `Cache` created by
+the `create` method of the `CacheClient`.
+
 Name | Arguments | Emitted | Followed by
 -----|-----------|---------|-------------
 `get:before` | `key`| before the datastore is called to get a value | none
