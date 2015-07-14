@@ -24,7 +24,7 @@ var sinon = require('sinon'),
   ];
 
 describe('integration/events', function () {
-  var cache, client, store, events, clock;
+  var cache, client, store, events, clock, timer, lease;
 
   beforeEach(function () {
     function noop() {}
@@ -34,11 +34,17 @@ describe('integration/events', function () {
       on: noop,
       del: noop,
       expire: noop,
+      delProp: noop,
       getProp: noop,
       setProp: noop,
       depProp: noop,
       incrPropBy: noop
     });
+    timer = stub({on: noop, setTimeout: noop});
+    lease = stub();
+    lease.yields(null, stub());
+    store.createTimer.returns(timer);
+    store.createLease.returns(lease);
     clock = sinon.useFakeTimers();
     client = dcache.createClient(store);
   });
@@ -227,6 +233,61 @@ describe('integration/events', function () {
       store.setProp.withArgs('n:k').yields(null);
 
       cache.get('k', w(verify, done));
+    });
+
+    it('should emit a `:error` event on an error', function (done) {
+      createCache('n', {
+        populate: function (k, cb) {
+          cb(new Error('perr'));
+        }
+      });
+
+      function verify(err) {
+        err.name.should.equal('PopulateError');
+        Object.keys(events).should.eql([
+          'get:before', 'get:after', 'get:miss',
+          'populate:before', 'populate:error', 'populate:after'
+        ]);
+        events['populate:error'].callCount.should.equal(1);
+        events['populate:error'].args[0][0].should.be.instanceOf(Error);
+        done();
+      }
+
+      store.getProp.withArgs('n:k').yields(null, null);
+
+      cache.get('k', verify);
+    });
+  });
+
+  describe('populateIn', function () {
+    it('should emit events in correct sequence when triggered', function (done) {
+      createCache('n', {
+        populateIn: 700,
+        pausePopulateIn: 900,
+        populate: function (k, cb) {
+          cb(null, 'z');
+        }
+      });
+
+      store.getProp.withArgs('n:k', 'accessedAt').yields(null, 0);
+      store.getProp.withArgs('n:k', 'hash').yields(null, null);
+      store.setProp.withArgs('n:k', 'value').yields(null);
+      store.delProp.withArgs('n:k', 'populateInErrorCount').yields(null);
+
+      timer.on.secondCall.args[0].should.equal('timeout');
+      timer.on.secondCall.args[1]('k');
+
+      cache.on('populateIn:after', function () {
+        Object.keys(events).should.eql([
+          'populateIn:before',
+          'populate:before',
+          'set:before', 'set:after',
+          'populate:after',
+          'populateIn:after'
+        ]);
+
+        done();
+      });
     });
   });
 });
