@@ -76,6 +76,7 @@ describe('decorators/PopulateDecorator', function () {
         }
       });
       unit.populate('k', function (err) {
+        err.name.should.equal('PopulateError');
         err.message.should.match(/populate threw/);
         done();
       });
@@ -119,8 +120,8 @@ describe('decorators/PopulateDecorator', function () {
     it('should proxy populate error and unlock', function (done) {
       var unlock = stub();
       function check(err) {
-        err.name.should.equal('PopulateError');
-        err.message.should.match(/failed to populate/);
+        err.name.should.equal('Error');
+        err.message.should.match('bad');
         unlock.calledOnce.should.be.ok();
         done();
       }
