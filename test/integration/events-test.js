@@ -260,15 +260,18 @@ describe('integration/events', function () {
   });
 
   describe('populateIn', function () {
-    it('should emit events in correct sequence when triggered', function (done) {
+    beforeEach(function () {
       createCache('n', {
         populateIn: 700,
         pausePopulateIn: 900,
+        populateInAttempts: 0,
         populate: function (k, cb) {
           cb(null, 'z');
         }
       });
+    });
 
+    it('should emit events in correct sequence when triggered', function (done) {
       store.getProp.withArgs('n:k', 'accessedAt').yields(null, 0);
       store.getProp.withArgs('n:k', 'hash').yields(null, null);
       store.setProp.withArgs('n:k', 'value').yields(null);
@@ -288,6 +291,47 @@ describe('integration/events', function () {
 
         done();
       });
+    });
+
+    it('should emit a `:pause` when the cache hasn\'t been accessed', function (done) {
+      clock.tick(1000);
+      store.getProp.withArgs('n:k', 'accessedAt').yields(null, 1);
+
+      timer.on.secondCall.args[0].should.equal('timeout');
+      timer.on.secondCall.args[1]('k');
+
+      cache.on('populateIn:after', function () {
+        Object.keys(events).should.eql([
+          'populateIn:before',
+          'populateIn:pause',
+          'populateIn:after'
+        ]);
+
+        done();
+      });
+    });
+
+    it('should emit a `:maxAttempts` when cache reaches `populateInAttempts`', function (done) {
+      // for the PopulateError we're triggering
+      client.on('error', function () {});
+
+      lease.yields(new Error('uncool'));
+      store.getProp.withArgs('n:k', 'accessedAt').yields(null, 0);
+      store.incrPropBy.withArgs('n:k', 'populateInErrorCount').yields(null, 1);
+
+      cache.on('populateIn:after', function () {
+        Object.keys(events).should.eql([
+          'populateIn:before',
+          'populateIn:maxAttempts',
+          'populateIn:error',
+          'populateIn:after'
+        ]);
+
+        done();
+      });
+
+      timer.on.secondCall.args[0].should.equal('timeout');
+      timer.on.secondCall.args[1]('k');
     });
   });
 });
