@@ -289,6 +289,9 @@ describe('integration/events', function () {
           'populateIn:after'
         ]);
 
+        events['populateIn:before'].should.eql({callCount: 1, args: [['k']]});
+        events['populateIn:after'].should.eql({callCount: 1, args: [['k', 0]]});
+
         done();
       });
     });
@@ -306,6 +309,8 @@ describe('integration/events', function () {
           'populateIn:pause',
           'populateIn:after'
         ]);
+
+        events['populateIn:pause'].should.eql({callCount: 1, args: [['k']]});
 
         done();
       });
@@ -326,6 +331,8 @@ describe('integration/events', function () {
           'populateIn:error',
           'populateIn:after'
         ]);
+
+        events['populateIn:maxAttempts'].should.eql({callCount: 1, args: [['k']]});
 
         done();
       });
