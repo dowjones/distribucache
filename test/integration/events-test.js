@@ -90,11 +90,7 @@ describe('integration/events', function () {
         Object.keys(events).should.eql([
           'get:before', 'get:after', 'get:hit'
         ]);
-        events.should.eql({
-          'get:before': {callCount: 1, args: [['b']]},
-          'get:after': {callCount: 1, args: [['b', 0]]},
-          'get:hit': {callCount: 1, args: [['b']]}
-        });
+        events['get:hit'].should.eql({callCount: 1, args: [['b']]});
       }
 
       cache.get('b', w(verify, done));
@@ -128,11 +124,6 @@ describe('integration/events', function () {
           Object.keys(events).should.eql([
             'get:before', 'get:after', 'get:hit'
           ]);
-          events.should.eql({
-            'get:before': {callCount: 1, args: [['b']]},
-            'get:after': {callCount: 1, args: [['b', 0]]},
-            'get:hit': {callCount: 1, args: [['b']]}
-          });
         }
 
         cache.get('b', w(verify, done));
@@ -148,12 +139,7 @@ describe('integration/events', function () {
           Object.keys(events).should.eql([
             'get:before', 'get:stale', 'get:after', 'get:hit'
           ]);
-          events.should.eql({
-            'get:before': {callCount: 1, args: [['b']]},
-            'get:stale': {callCount: 1, args: [['b']]},
-            'get:after': {callCount: 1, args: [['b', 0]]},
-            'get:hit': {callCount: 1, args: [['b']]}
-          });
+          events['get:stale'].should.eql({callCount: 1, args: [['b']]});
         }
 
         cache.get('b', w(verify, done));
@@ -210,11 +196,37 @@ describe('integration/events', function () {
       function verify() {
         arguments.length.should.equal(0);
         Object.keys(events).should.eql(['set:before', 'set:identical', 'set:after']);
-        events['set:before'].should.eql({callCount: 1, args: [['s', 'v']]});
         events['set:identical'].should.eql({callCount: 1, args: [['s']]});
       }
 
       cache.set('s', 'v', w(verify, done));
+    });
+  });
+
+  describe('populate', function () {
+    it('should populate on a `get:miss`', function (done) {
+      createCache('n', {
+        populate: function (k, cb) {
+          cb(null, 'z');
+        }
+      });
+
+      function verify(value) {
+        value.should.eql('z');
+        Object.keys(events).should.eql([
+          'get:before', 'get:after', 'get:miss',
+          'populate:before',
+          'set:before', 'set:after',
+          'populate:after'
+        ]);
+        events['populate:before'].should.eql({callCount: 1, args: [['k']]});
+        events['populate:after'].should.eql({callCount: 1, args: [['k', 0]]});
+      }
+
+      store.getProp.withArgs('n:k').yields(null, null);
+      store.setProp.withArgs('n:k').yields(null);
+
+      cache.get('k', w(verify, done));
     });
   });
 });
