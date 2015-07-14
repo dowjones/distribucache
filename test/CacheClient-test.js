@@ -116,11 +116,6 @@ describe('CacheClient', function () {
         c = unit.create('n');
         util.propagateEvents.calledOnce.should.be.ok();
       });
-
-      it('should stop error event propagation if desired', function () {
-        c = unit.create('n', {stopEventPropagation: true});
-        util.propagateEvents.calledOnce.should.not.be.ok();
-      });
     });
   });
 
