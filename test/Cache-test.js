@@ -1,6 +1,5 @@
 var Cache = require('./_all').Cache,
-  stub = require('sinon').stub,
-  spy = require('sinon').spy;
+  stub = require('sinon').stub;
 
 describe('Cache', function () {
   var unit, store;
@@ -15,58 +14,19 @@ describe('Cache', function () {
     unit = new Cache(store);
   });
 
-  describe('get', function () {
-    it('should emit a get event', function (done) {
-      var getSpy = spy();
-      unit.on('get', getSpy);
-
-      function check() {
-        getSpy.calledOnce.should.be.ok();
-        done();
-      }
-
-      store.getValue.yields(null);
-      unit.get('k', check);
-    });
-
-    it('should proxy error from hget', function (done) {
-      function check(err) {
-        err.message.should.equal('handled');
-        done();
-      }
-      store.getValue.yields(new Error('handled'));
-      unit.get('k', check);
-    });
+  it('should get', function(done) {
+    store.getValue.withArgs('k').yields(null);
+    unit.get('k', done);
   });
 
-  describe('set', function () {
-    it('should emit a set event', function (done) {
-      var setSpy = spy();
-      unit.on('set', setSpy);
-
-      function check() {
-        setSpy.calledOnce.should.be.ok();
-        done();
-      }
-
-      store.setValue.yields(null, 'ok');
-      unit.set('k', 'v', check);
-    });
+  it('should set', function(done) {
+    store.setValue.withArgs('k', 'v').yields(null);
+    unit.set('k', 'v', done);
   });
 
-  describe('del', function () {
-    it('should emit a del event', function (done) {
-      var delSpy = spy();
-      unit.on('del', delSpy);
-
-      function check() {
-        delSpy.calledOnce.should.be.ok();
-        done();
-      }
-
-      store.del.yields(null);
-      unit.del('k', check);
-    });
+  it('should del', function(done) {
+    store.del.withArgs('k').yields(null);
+    unit.del('k', done);
   });
 
   // protected

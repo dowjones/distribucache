@@ -56,7 +56,7 @@ describe('decorators/ExpiresDecorator', function () {
       unit = new ExpiresDecorator(cache, {staleIn: 0});
       unit.get('k', function () {
         cache.emit.calledOnce.should.be.ok();
-        cache.emit.firstCall.args[0].should.equal('stale');
+        cache.emit.firstCall.args[0].should.equal('get:stale');
         done();
       });
     });

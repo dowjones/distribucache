@@ -3,8 +3,19 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+
+## [6.0.0] - 2015-07-17
 #### Added
+- Robust events, to be used for debugging and collecting stats
+  (see the [Events docs](/docs/events.md) for more info).
 - ESLint validation on `npm test`. Also runs via `npm run lint`.
+
+#### Removed
+- (!) Event propagation from `Cache` to `CacheClient`. The only remaining
+  propagated event is the `error` event. If you're interested in capturing
+  events from all caches of a single client, you may subscribe to the `create`
+  event of the `CacheClient` and then listen to specific events emitted by the
+  created cache.
 
 ## [5.1.0] - 2015-07-04
 #### Added
@@ -112,7 +123,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Initial release of a Redis-backed automatically-repopulating cache.
 
 
-[unreleased]: https://github.com/dowjones/distribucache/compare/v5.1.0...HEAD
+[unreleased]: https://github.com/dowjones/distribucache/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/dowjones/distribucache/compare/v5.1.0...v6.0.0
 [5.1.0]: https://github.com/dowjones/distribucache/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/dowjones/distribucache/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/dowjones/distribucache/compare/v3.1.0...v4.0.0

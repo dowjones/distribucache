@@ -10,7 +10,7 @@ There are multiple available **datastores**, including:
   - [Memory](https://github.com/dowjones/distribucache-memory-store)
 
 The cache can be used in various ways, ranging from the simplest get / set, to
-complex scenarious with watermarks for staleness and final expiration.
+complex scenarios with watermarks for staleness and final expiration.
 
 
 ## Usage
@@ -101,11 +101,13 @@ cache.get('k1', function (err, value) {
 
 ### Expiration / Staleness
 
-An `expiresIn` can be set (in ms or in human-reabable format described below)
-to for the cache to use return `null`
-and to drop a value from the datastore when it reaches
-its expiration date. When the `populate` function is set,
+When an `expiresIn` is set, a get request will return `null`
+after the time expires. After this, the value will be dropped
+from the datastore. When the `populate` function is set,
 instead of returning `null` the `populate` method will be called.
+
+The `expiresIn` may be set in milliseconds or in the
+[human-readable](/docs/timeIntervals.md) format.
 
 ```javascript
 var cache = cacheClient.create('nsp', {
@@ -150,58 +152,6 @@ of determining which keys need to be re-populated is on the store (e.g., in the 
 is done using a combination of keyspace events and expiring keys).
 
 
-### Stored Value Size Optimization
-
-The default assumption for this cache is that the values stored will be large.
-Thus, unnecessarily storing a value identical to the one that is already in
-the cache should be avoided, even at some cost.
-
-When a value is set into the cache, an md5 hash of the value is stored along
-with it. On subsequent `set` calls, first the hash is retrieved from the cache,
-and if it is identical to the hash of the new value, the new value is not
-sent to the cache. Thus, for the price of an additional call to the
-datastore and a few extra CPU cycles for the md5 checksum the cache makes
-sure that the large value does not get (un)marshalled and transmitted to
-the datastore.
-
-If the values that you intend to store are small (say, < 0.1 KB; the hash itself is 16 bytes),
-it may not make sense to have the extra call. Thus, you may want to disable
-this feature in that case. To do so, set the `optimizeForSmallValues`
-config parameter to `true`:
-
-```javascript
-var cache = cacheClient.create('nsp', {
-  optimizeForSmallValues: true
-});
-```
-
-
-### Optimization For Caching Buffers
-
-By default the library is configured to store objects. Distribucache marshalls
-the objects to a string (via `JSON.stringify`) and stores it in a datastore.
-When retrieving an object from a store distribucache will unmarshall the string
-(via `JSON.parse`) and return the object to the client. This works well for objects,
-but is not optimal for storing `Buffer`s, as said marshalling has memory and CPU overhead.
-To minimize that overhead distribucache has an `optimizeForBuffers` configuration option.
-
-With the `distribucache-redis-store` for example, the full path an object takes may be:
-`Buffer (Redis) -> String (Redis) -> Object (Distribucache) -> String (App) -> Buffer (Http)`
-
-When `optimizeForBuffers: true` is enabled, on the other hand, the path will be:
-`Buffer (Redis) ->  [same] Buffer (Distribucache) -> [same] Buffer (App) -> [same] Buffer (Http)`,
-thereby avoiding taking up the extra memory by the `String` / `Object` representations
-and also avoiding the CPU overhead of converting and garbage-collecting.
-
-```javascript
-var cache = cacheClient.create('nsp', {
-  optimizeForBuffers: true
-});
-```
-
-Once set, `cache.get()` will return a `Buffer` as the value.
-
-
 ### API
 
 #### Distribucache
@@ -209,12 +159,10 @@ Once set, `cache.get()` will return a `Buffer` as the value.
   - `createClient(store, config)`
 
 Possible `config` values below.
-**Note:** The following values are allowed for the config and are
-also available to the `CacheClient#create`:
 ```
 {String} [config.namespace]
 {Boolean} [config.optimizeForSmallValues] defaults to false
-{Boolean} [config.stopEventPropagation] defaults to false
+{Boolean} [config.optimizeForBuffers] defaults to false
 {String} [config.expiresIn] in ms
 {String} [config.staleIn] in ms
 {Function} [config.populate]
@@ -225,6 +173,12 @@ also available to the `CacheClient#create`:
 {Number} [config.leaseExpiresIn] in ms
 {Number} [config.accessedAtThrottle] in ms, defaults to 1000
 ```
+
+**Notes:** 
+  - The values above are allowed for the config and are
+also available to the `CacheClient#create`
+  - See the [Optimizations docs](/docs/optimizations.md) for values 
+that begin with `optimizeFor`
 
 #### CacheClient
 
@@ -237,53 +191,12 @@ also available to the `CacheClient#create`:
     - `config` is an `Object`. See the global config above for all
       of the possible values.
 
+### More
 
-### CacheClient-emitted Events
-
-The `CacheClient` events are propagated from the `Cache`s created by the client.
-You can disable event-propagation by setting `config.stopEventPropagation` to `true`.
-
-The following events are emmitted *before* the actual call is completed:
-
-  - `get` - `(key, namespace)`
-  - `set` - `(key, value, namespace)`
-  - `del` -  `(key, namespace)`
-  - `stale` - `(key, namespace)`
-  - `error` - `(error, namespace)`
-
-*Note:* `error` is emitted by various feature decorators. It is a good idea to listen
-to this event, as otherwise the the error will be logged to `stderr`.
-
-
-### Cache-emitted Events
-
-The following events are emmitted *before* the call is completed:
-
-  - `get` - `(key)`
-  - `set` - `(key, value)`
-  - `del` -  `(key)`
-  - `stale` - `(key)` - emitted on a get, when the value is in the cache but is stale. This happens only when the `staleIn` is set.
-
-
-### Human-readable Time Intervals
-
-The time intervals in this library can be provided as a `number`
-in milliseconds **or** as a human-readible time interval.
-
-Below are a few  examples:
-
-  - `1 ms`
-  - `5 days`
-  - `3 minutes`
-  - `10 hours`
-  - `30 seconds`
-
-There are also a few supported abbreviations (either can be used):
-
-   - `ms`
-   - `sec` -> `second`
-   - `min` -> `minute`
-
+ - [Events](/docs/events.md)
+ - [Optimizations](/docs/optimizations.md)
+ - [Human-readable Time Intervals](/docs/timeIntervals.md)
+ - [Debugging](/docs/debugging.md)
 
 ## License
 

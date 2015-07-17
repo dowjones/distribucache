@@ -27,6 +27,7 @@ describe('CacheClient', function () {
     deco = {};
     deco.OnlySetChangedDecorator = spy(Cache);
     deco.MarshallDecorator = spy(Cache);
+    deco.EventDecorator = spy(Cache);
     deco.ExpiresDecorator = spy(Cache);
     deco.PopulateDecorator = spy(Cache);
     deco.PopulateInDecorator = spy(Cache);
@@ -114,11 +115,6 @@ describe('CacheClient', function () {
       it('should retransmit error events by default', function () {
         c = unit.create('n');
         util.propagateEvents.calledOnce.should.be.ok();
-      });
-
-      it('should stop error event propagation if desired', function () {
-        c = unit.create('n', {stopEventPropagation: true});
-        util.propagateEvents.calledOnce.should.not.be.ok();
       });
     });
   });
