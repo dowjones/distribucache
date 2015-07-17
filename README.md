@@ -159,11 +159,10 @@ is done using a combination of keyspace events and expiring keys).
   - `createClient(store, config)`
 
 Possible `config` values below.
-**Note:** The following values are allowed for the config and are
-also available to the `CacheClient#create`:
 ```
 {String} [config.namespace]
 {Boolean} [config.optimizeForSmallValues] defaults to false
+{Boolean} [config.optimizeForBuffers] defaults to false
 {String} [config.expiresIn] in ms
 {String} [config.staleIn] in ms
 {Function} [config.populate]
@@ -174,6 +173,12 @@ also available to the `CacheClient#create`:
 {Number} [config.leaseExpiresIn] in ms
 {Number} [config.accessedAtThrottle] in ms, defaults to 1000
 ```
+
+**Notes:** 
+  - The values above are allowed for the config and are
+also available to the `CacheClient#create`
+  - See the [Optimizations docs](/docs/optimizations.md) for values 
+that begin with `optimizeFor`
 
 #### CacheClient
 
