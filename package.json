@@ -28,6 +28,7 @@
     "require-directory": "^2.1.1"
   },
   "devDependencies": {
+    "distribucache-console-logger": "^1.0.2",
     "distribucache-memory-store": "^5.0.0",
     "distribucache-redis-store": "^5.0.1",
     "eslint": "^0.24.0",

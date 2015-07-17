@@ -4,6 +4,7 @@ var distribucache = require('../lib'),
   //memoryStore = require('distribucache-memory-store'),
   //store = memoryStore(),
   redisStore = require('distribucache-redis-store'),
+  logEvents = require('distribucache-console-logger'),
   store = redisStore({namespace: 'ex', host: 'localhost', port: 6379}),
   cacheClient = distribucache.createClient(store),
   cache;
@@ -20,6 +21,8 @@ cache = cacheClient.create('randomness', {
     }, 250);
   }
 });
+
+logEvents(cache);
 
 function doIt() {
   var t = Date.now();
