@@ -101,11 +101,13 @@ cache.get('k1', function (err, value) {
 
 ### Expiration / Staleness
 
-An `expiresIn` can be set (in ms or in human-reabable format described below)
-to for the cache to use return `null`
-and to drop a value from the datastore when it reaches
-its expiration date. When the `populate` function is set,
+When an `expiresIn` is set, a get request will return `null`
+after the time expires. After this, the value will be dropped
+from the datastore. When the `populate` function is set,
 instead of returning `null` the `populate` method will be called.
+
+The `expiresIn` may be set in milliseconds or in the
+[human-readable](/docs/timeIntervals.md) format.
 
 ```javascript
 var cache = cacheClient.create('nsp', {
@@ -150,58 +152,6 @@ of determining which keys need to be re-populated is on the store (e.g., in the 
 is done using a combination of keyspace events and expiring keys).
 
 
-### Stored Value Size Optimization
-
-The default assumption for this cache is that the values stored will be large.
-Thus, unnecessarily storing a value identical to the one that is already in
-the cache should be avoided, even at some cost.
-
-When a value is set into the cache, an md5 hash of the value is stored along
-with it. On subsequent `set` calls, first the hash is retrieved from the cache,
-and if it is identical to the hash of the new value, the new value is not
-sent to the cache. Thus, for the price of an additional call to the
-datastore and a few extra CPU cycles for the md5 checksum the cache makes
-sure that the large value does not get (un)marshalled and transmitted to
-the datastore.
-
-If the values that you intend to store are small (say, < 0.1 KB; the hash itself is 16 bytes),
-it may not make sense to have the extra call. Thus, you may want to disable
-this feature in that case. To do so, set the `optimizeForSmallValues`
-config parameter to `true`:
-
-```javascript
-var cache = cacheClient.create('nsp', {
-  optimizeForSmallValues: true
-});
-```
-
-
-### Optimization For Caching Buffers
-
-By default the library is configured to store objects. Distribucache marshalls
-the objects to a string (via `JSON.stringify`) and stores it in a datastore.
-When retrieving an object from a store distribucache will unmarshall the string
-(via `JSON.parse`) and return the object to the client. This works well for objects,
-but is not optimal for storing `Buffer`s, as said marshalling has memory and CPU overhead.
-To minimize that overhead distribucache has an `optimizeForBuffers` configuration option.
-
-With the `distribucache-redis-store` for example, the full path an object takes may be:
-`Buffer (Redis) -> String (Redis) -> Object (Distribucache) -> String (App) -> Buffer (Http)`
-
-When `optimizeForBuffers: true` is enabled, on the other hand, the path will be:
-`Buffer (Redis) ->  [same] Buffer (Distribucache) -> [same] Buffer (App) -> [same] Buffer (Http)`,
-thereby avoiding taking up the extra memory by the `String` / `Object` representations
-and also avoiding the CPU overhead of converting and garbage-collecting.
-
-```javascript
-var cache = cacheClient.create('nsp', {
-  optimizeForBuffers: true
-});
-```
-
-Once set, `cache.get()` will return a `Buffer` as the value.
-
-
 ### API
 
 #### Distribucache
@@ -236,75 +186,11 @@ also available to the `CacheClient#create`:
     - `config` is an `Object`. See the global config above for all
       of the possible values.
 
+### More
 
-### CacheClient-emitted Events
-
-Name | Arguments | Emitted
------|-----------|--------
-`create` | `cache, namespace` | when the `CacheClient#create` method is called
-`error` | `err, namespace` | on errors
-
-The `CacheClient` `error` event is propagated from the `Cache`s created by the client.
-
-
-### Cache-emitted Events
-
-The events below are emitted by the `Cache` created by
-the `create` method of the `CacheClient`.
-
-Name | Arguments | Emitted | Followed by
------|-----------|---------|-------------
-`get:before` | `key`| before the datastore is called to get a value | none
-`get:stale` | `key` | when an element exceeds its `staleIn` time | `populate`
-`get:expire` | `key` | when an element exceeds its `expireIn` time | `del`
-`get:hit` | `key` | when an element exceeds its `expireIn` time  | none
-`get:miss` | `key` | when an element is not in the cache | `populate`
-`get:after` | `key, elapsedTimeInMs` | after the datastore returns a value or an error | none
-`get:error` | `err, key` | when a datastore returns an error | none
-| | | |
-| | | |
-`set:before` | `key, value` | before the datastore is called to set a value | none
-`set:identical` | `key, value` | when a value that is being set is identical to the one in the datastore. | none
-`set:after` | `key, value, elapsedTimeInMs` | after the datastore is done setting a value | none
-`set:error` | `err, key, value` | when a datastore returns an error | none
-| | | |
-| | | |
-`del:before` | `key` | before the datastore is called to delete a value | none
-`del:after` | `key, elapsedTimeInMs` | after the datastore is done deleting an element | none
-`del:error` | `err, key` | when a datastore returns an error | none
-| | | |
-| | | |
-`populate:before` | `key` | before distribucache attempts to populate a value | `set`
-`populate:after` | `key, elapsedTimeInMs` | after distribucahce populates a value or returns an error | none
-`populate:error` | `err, key` | when a datastore returns an error | none
-| | | |
-| | | |
-`populateIn:before` | `key` | before distribucache attempts to populate a value (on the `populateIn` interval) | `populate`
-`populateIn:pause` | `key` | when the cache hasn't been re-populated within the `pausePopulateIn` time | none
-`populateIn:maxAttempts` | `key` | when the cache reached the maximum number of attempts to populate (as configured by `populateInAttempts`) | none
-`populateIn:after` | `key, elapsedTimeInMs` | after distribucache is done setting a value or returns an error | none
-`populateIn:error` | `err, key` | when a datastore returns an error  | none
-
-
-### Human-readable Time Intervals
-
-The time intervals in this library can be provided as a `number`
-in milliseconds **or** as a human-readable time interval.
-
-Below are a few  examples:
-
-  - `1 ms`
-  - `5 days`
-  - `3 minutes`
-  - `10 hours`
-  - `30 seconds`
-
-There are also a few supported abbreviations (either can be used):
-
-   - `ms`
-   - `sec` -> `second`
-   - `min` -> `minute`
-
+ - [Events](/docs/events.md).
+ - [Optimizations](/docs/optimizations.md).
+ - [Human-readable Time Intervals](/docs/timeIntervals.md).
 
 ## License
 
