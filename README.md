@@ -188,9 +188,9 @@ also available to the `CacheClient#create`:
 
 ### More
 
- - [Events](/docs/events.md).
- - [Optimizations](/docs/optimizations.md).
- - [Human-readable Time Intervals](/docs/timeIntervals.md).
+ - [Events](/docs/events.md)
+ - [Optimizations](/docs/optimizations.md)
+ - [Human-readable Time Intervals](/docs/timeIntervals.md)
 
 ## License
 
