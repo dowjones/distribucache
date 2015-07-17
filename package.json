@@ -1,6 +1,6 @@
 {
   "name": "distribucache",
-  "version": "5.2.0",
+  "version": "6.0.0",
   "description": "Store-backed Automatically Populating Cache",
   "keywords": [
     "cache",
