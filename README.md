@@ -191,6 +191,7 @@ also available to the `CacheClient#create`:
  - [Events](/docs/events.md)
  - [Optimizations](/docs/optimizations.md)
  - [Human-readable Time Intervals](/docs/timeIntervals.md)
+ - [Debugging](/docs/debugging.md)
 
 ## License
 

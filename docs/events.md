@@ -47,3 +47,7 @@ Name | Arguments | Emitted | Followed by
 `populateIn:maxAttempts` | `key` | when the cache reached the maximum number of attempts to populate (as configured by `populateInAttempts`) | none
 `populateIn:after` | `key, elapsedTimeInMs` | after distribucache is done setting a value or returns an error | none
 `populateIn:error` | `err, key` | when a datastore returns an error  | none
+
+
+One use-case for the events is debugging. See the [Debugging docs](/docs/debugging.md)
+for more info.
