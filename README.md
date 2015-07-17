@@ -239,12 +239,12 @@ also available to the `CacheClient#create`:
 
 ### CacheClient-emitted Events
 
-The `CacheClient` `error` event is propagated from the `Cache`s created by the client.
-
 Name | Arguments | Emitted
 -----|-----------|--------
 `create` | `cache, namespace` | when the `CacheClient#create` method is called
 `error` | `err, namespace` | on errors
+
+The `CacheClient` `error` event is propagated from the `Cache`s created by the client.
 
 
 ### Cache-emitted Events
