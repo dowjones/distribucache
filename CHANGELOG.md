@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 
+## [6.0.1] - 2015-07-17
+#### Added
+- `namespace` as the second argument of the `CacheClient` `create` event.
+
 ## [6.0.0] - 2015-07-17
 #### Added
 - Robust events, to be used for debugging and collecting stats
@@ -123,7 +127,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Initial release of a Redis-backed automatically-repopulating cache.
 
 
-[unreleased]: https://github.com/dowjones/distribucache/compare/v6.0.0...HEAD
+[unreleased]: https://github.com/dowjones/distribucache/compare/v6.0.1...HEAD
+[6.0.1]: https://github.com/dowjones/distribucache/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/dowjones/distribucache/compare/v5.1.0...v6.0.0
 [5.1.0]: https://github.com/dowjones/distribucache/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/dowjones/distribucache/compare/v4.0.0...v5.0.0

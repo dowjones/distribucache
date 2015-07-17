@@ -65,6 +65,15 @@ describe('integration/events', function () {
     });
   }
 
+  it('should emit a `create` event', function (done) {
+    client.on('create', function (c, namespace) {
+      c.should.be.type('object');
+      namespace.should.equal('nsp');
+      done();
+    });
+    client.create('nsp');
+  });
+
   describe('get', function () {
     beforeEach(createCache.bind(null, 'n'));
 
