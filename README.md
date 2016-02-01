@@ -49,9 +49,12 @@ cache.del('k1', function (err) {
 });
 ```
 
-*Note:* the `value` from the `get` will be `null` if
-the value is not in the cache.
+**Promises:** if a callback is not provided as the last argument, a
+[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+will be returned from the `get`, `set` and `del` methods.
 
+**Note:** the `value` from the `get` will be `null` if
+the value is not in the cache.
 
 ### Configuration
 
@@ -97,6 +100,10 @@ cache.get('k1', function (err, value) {
   console.log(value); // 42
 });
 ```
+
+**Promises:** the `populate` function may return a
+[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+if you choose.
 
 
 ### Expiration / Staleness
