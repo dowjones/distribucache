@@ -31,6 +31,7 @@ describe('CacheClient', function () {
     deco.ExpiresDecorator = spy(Cache);
     deco.PopulateDecorator = spy(Cache);
     deco.PopulateInDecorator = spy(Cache);
+    deco.PromiseDecorator = spy(Cache);
 
     CacheClient = proxyquire('../lib/CacheClient', {
       './Cache': Cache,

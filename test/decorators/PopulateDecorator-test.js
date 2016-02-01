@@ -1,5 +1,6 @@
 var proxyquire = require('proxyquire').noCallThru(),
-  stub = require('sinon').stub;
+  stub = require('sinon').stub,
+  Promise = require('es6-promise').Promise;
 
 describe('decorators/PopulateDecorator', function () {
   var PopulateDecorator, unit, cache,
@@ -79,6 +80,52 @@ describe('decorators/PopulateDecorator', function () {
         err.name.should.equal('PopulateError');
         err.message.should.match(/populate threw/);
         done();
+      });
+    });
+
+    describe('with promises', function () {
+      it('should return an error when rejected', function (done) {
+        unit = new PopulateDecorator(cache, {
+          populate: function () {
+            return new Promise(function (resolve, reject) {
+              reject(new Error('promise rejected'));
+            });
+          }
+        });
+        unit.populate('k', function (err) {
+          err.name.should.equal('PopulateError');
+          err.message.should.match(/promise rejected/);
+          done();
+        });
+      });
+
+      it('should return an error when thrown', function (done) {
+        unit = new PopulateDecorator(cache, {
+          populate: function () {
+            return new Promise(function () {
+              throw new Error('promise thrown');
+            });
+          }
+        });
+        unit.populate('k', function (err) {
+          err.name.should.equal('PopulateError');
+          err.message.should.match(/promise thrown/);
+          done();
+        });
+      });
+
+      it('should return a value when resolved', function (done) {
+        unit = new PopulateDecorator(cache, {
+          populate: function () {
+            return Promise.resolve('rv');
+          }
+        });
+        cache.set.yields(null);
+        unit.populate('k', function (err, value) {
+          if (err) return done(err);
+          value.should.equal('rv');
+          done();
+        });
       });
     });
   });
