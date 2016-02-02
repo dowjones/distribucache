@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 
+## [6.1.0] - 2016-02-01
+#### Added
+- Support for Promises in `get`, `set`, `del` and `populate` ([#5](https://github.com/dowjones/distribucache/issues/5))
+
 ## [6.0.1] - 2015-07-17
 #### Added
 - `namespace` as the second argument of the `CacheClient` `create` event.
